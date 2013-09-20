@@ -1,0 +1,93 @@
+.photon-wizard{
+	.navbar{
+		margin: 0;
+	}
+	.navbar-inner{
+		padding: 0 (@baseLineHeight *0.5);
+		border-color: #fff transparent #d4d4d4 transparent;
+		.border-radius(4px 4px 0 0);
+	}
+	.progress{
+		margin: 5px 0 10px;
+	}
+	.tab-content{
+		border-top: 1px solid #fff;
+	}
+	.tab-pane{
+		padding: 0;
+		margin: 0;
+		border: none;
+		border-bottom: 1px solid #d4d4d4;
+		.border-radius(0);
+		
+		.control-group{
+			border: none !important;
+			&:last-child{
+				.border-radius(0);
+			}
+		}
+	}
+	.form-pager{
+		margin: 0;
+		padding: (@baseLineHeight *0.75) (@baseLineHeight *0.5);
+		list-style: none;
+		text-align: right;
+		border-top: 1px solid #fff;
+		background: @grayTitle;
+
+		li{
+			display: inline;
+		}
+
+		.btn{
+			margin: 0;
+			display: inline-block;
+		}
+
+		.disabled .btn{
+			.buttonBackground(darken(@btnBackground, 0), darken(@btnBackground, 0), @grayLight, 0 1px 0 rgba(255,255,255,.75));
+		    .opacity(60);
+		    .box-shadow(@btnShadow);
+		    border: 1px solid @btnBorder;
+		    cursor: default;
+		}
+	}
+	.terms-of{
+		background-color: #fff;
+		padding: 0 (@baseLineHeight *0.5) (@baseLineHeight *0.75);
+		border-bottom: 1px solid #ddd;
+		
+		h3{
+			text-align: center;
+		}
+	}
+	.centered{
+		text-align: center;
+	}
+}
+
+.photon-wizard.tabs-left{
+	background: @grayTitle;
+
+	.nav-tabs{
+		margin: 0;
+		border: none;
+		padding: 4px;
+		padding-right: 0;
+		background-color: transparent;
+
+		a{
+			padding: (@baseLineHeight *0.75);
+			margin-bottom: 9px;
+		}
+
+		.active a{
+			background-color: @backgroundGray;
+			border-color: #d4d4d4 transparent #d4d4d4 #d4d4d4;
+		}
+	}
+	.tab-content{
+		border: none;
+		border-left: 1px solid #d4d4d4;
+	}
+}

@@ -1,0 +1,285 @@
+.form-horizontal .image-gallery{
+    border: none;
+
+    .control-group{
+        border-top: none;
+        background-color: #fff;
+        .border-radius(4px);
+
+        .control-group{
+            .border-radius(0);
+        }
+        .gallery-wrapper{
+            .border-radius(0 0 4px 4px);
+        }
+    }
+
+    .nav-tabs{
+        padding: (@baseLineHeight *0.5) (@baseLineHeight *0.5) 0;
+        border: 1px solid #d1d7df;
+        height: 41px;
+        .box-sizing(border-box);
+
+
+        li{
+            float: right;
+            margin-right: -2px;
+            width: 120px;
+
+            &.active a{
+                font-size: 12px;
+                text-align: center;
+                color: #666;
+                text-shadow: 0 1px 0 rgba(255, 255, 255, 0.75);
+            }
+        }
+
+        .gallery-title{
+            float: left;
+            color: #333;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+        
+        .upload-images{
+            margin-right: 0;
+        }
+        .upload-images .btn{
+            position: relative;
+            float: right;
+            top: -5px;
+            width: 117px;
+        }
+    }
+    .tab-content .tab-pane{
+        padding: 0;
+        margin: 0;
+    }
+    .upload-boxes{
+        position: relative;
+        background-color: #fff;
+        padding: (@baseLineHeight *0.75) (@baseLineHeight *0.5);
+
+        .maxsize{
+            font-size: 0.75em;
+        }
+    }
+    .gallery-wrapper, .close-upload{
+        position: relative;
+        padding: (@baseLineHeight *0.75) (@baseLineHeight *0.5) (@baseLineHeight *0.25);
+        text-align: left;
+        background-color: #fff;
+        .transition(background-color 0.3s);
+
+        &.upload-open{
+            background-color: rgba(220, 220, 220, 0.6);
+        }
+
+        .btn{
+            float: right;
+            margin-left: (@baseLineHeight *0.5);
+            margin-bottom: (@baseLineHeight *0.5);
+            font-weight: lighter;
+            width: 117px;
+        }
+
+        > .row-shadow{
+            position: absolute;
+            bottom: -20px;
+            left: 2.5%;
+            height: 20px;
+            width: 95%;
+            z-index: 10;
+        }
+    }
+    .image-upload{
+        display: none;
+        opacity: 0;
+    }
+}
+
+.image-cell{
+    position: relative;
+    display: inline-block;
+    background-color: #fff;
+    height: 130px;
+    width: 130px;
+    margin: 0 (@baseLineHeight *0.5) (@baseLineHeight *0.5) 0;
+    line-height: 119px;
+    text-align: center;
+    border: 1px solid #d1d7df;
+    border-width: 0 1px 1px 0;
+
+    .user-image{
+        max-height: 100%;
+        max-width: 100%;
+        vertical-align: middle;
+    }
+    .row-shadow{
+        position: absolute;
+        left: 0;
+        bottom: -9px;
+        width: 100%;
+        height: 9px;
+    }
+}
+
+// IMG HOVER MENU
+.hover-menu{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 10;
+    opacity: 0;
+    background-image: url('@{photonImagePath}gallery_bck.png');
+    
+    p{
+        color: #fff;
+        height: 15px;
+        width: 120px;
+        margin: 5px 5px 0;
+        line-height: 15px;
+        text-align: left;
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        position: absolute;
+        top: 0;
+        a{
+            color: #fff;
+            text-decoration: none;
+        }
+        span{
+            font-weight: bold;
+            color: #487999;
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.75);
+        }
+        &:hover{
+            cursor: pointer;
+        }
+    }
+    .menu-cell-wrap{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 30px;
+        background-image: url('@{photonImagePath}gallery_bck.png');
+    }
+    .menu-cell{
+        .entypo;
+        display: block;
+        width: 25%;
+        float: left;
+        height: 30px;
+        line-height: 30px;
+        font-size: 40px;
+        border-right: 1px solid rgb(220, 220, 222);
+        border-right-color: rgba(220, 220, 222, 0.3);
+        text-decoration: none;
+        color: #fff;
+        .box-sizing(border-box);
+        .transition(background-color 0.1s);
+        
+        &.eye-cell{
+            border-right: none;
+        }
+
+        &:hover{
+            background-color: rgb(55, 63, 73);
+        }
+
+        // &.menu-delete, &.caption-warning{
+        //     position: absolute;
+        //     right: -4px;
+        //     top: -101px;
+        //     font-size: 35px;
+        //     border: none;
+        //     .transition(color 0.1s);
+        // }
+        // &.menu-delete:hover{
+        //     background-color: transparent;
+        //     color: #999;
+        // }
+        &.caption-warning{
+            right: auto;
+            left: -4px;
+            color: #ffffff;
+            &:hover{
+                background-color: transparent;
+                cursor: default;
+            }
+        }
+    }
+    .confirm-delete{
+        position: absolute;
+        display: none;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 25px;
+        padding: 0 5px;
+        background-image: url('@{photonImagePath}gallery_bck.png');
+        .box-sizing(border-box);
+
+        span,a{
+            float: left;
+            text-decoration: none;
+            color: #ffffff;
+            font-size: 12px;
+            line-height: 25px;
+        }
+        a{
+            color: #fff;
+            float: right;
+            margin-left: 8px;
+            .transition(color 0.1s);
+
+            &:hover{
+                color: #cccccc;
+            }
+        }
+    }
+}
+
+// MODAL EDIT DIALOG
+#modal-edit-dialog{
+    h3{
+        font-size: 18px;
+        i{
+           .entypo; 
+           position: relative;
+           top: -2px;
+           left: -3px;
+           display: inline-block;
+           font-size: 55px;
+           vertical-align: middle;
+           font-weight: normal;
+        }
+    }
+    .controls{
+        position: relative;
+        padding-top: 6px;
+
+        &:first-child{
+            // margin-bottom: 13px;
+        }
+    }
+    .caption-label{
+        position: absolute;
+        top: -2px;
+        left: 0;
+        color: #666;
+    }
+}
+
+
+// TEMPLATE HIDE
+.gallery-hover-template{
+    position: absolute;
+    width: 0;
+    height: 0;
+    display: none;
+}
