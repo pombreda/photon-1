@@ -16,7 +16,7 @@
         "illuminate/support": "4.0.x",
         "orangehill/iseed": "dev-master",
         "baum/baum": "~1.0",
-        "way/generators": "dev-master",
+        "way/generators": "dev-master"
     },
     "autoload": {
         "classmap": [
