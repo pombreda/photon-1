@@ -9,6 +9,8 @@ Route::group(array('before' => 'is_admin'), function()
 	Route::controller('admin/jstree/{table?}', '\Orangehill\Photon\JsTreeController');
 	// Route that feeds jstree plugin with initial settings
 	Route::controller('admin/jstree-settings', '\Orangehill\Photon\JsTreeSettingsController');
+	// Route that feeds jstree plugin with initial settings
+	Route::controller('admin/settings/{id?}', '\Orangehill\Photon\SettingsController');
 	// Main admin resource controller
 	Route::controller('admin', '\Orangehill\Photon\AdminController');
 });

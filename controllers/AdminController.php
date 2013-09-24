@@ -13,7 +13,6 @@ class AdminController extends \Controller
 	 */
 	public function __construct()
 	{
-		$this->settings = new SettingsController;
 		$this->module = new ModuleController;
 	}
 
@@ -26,29 +25,6 @@ class AdminController extends \Controller
 	{
 		// Show the Dashboard
 		return \View::make('photon::dashboard.default');
-	}
-
-	/**
-	 * Show the Settings Page.
-	 *
-	 * @return Response
-	 */
-	public function getSettings($id = false)
-	{
-		$this->settings->init($id);
-		// Show the Settings Page
-		return \View::make('photon::admin.settings', $this->settings->data);
-	}
-
-	/**
-	 * Receive the Settings Page Form POST data.
-	 *
-	 * @return Response
-	 */
-	public function postSettings($id = false)
-	{
-		$this->settings->init($id);
-		return $this->settings->postSettings();
 	}
 
 	/**
