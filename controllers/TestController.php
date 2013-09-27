@@ -1,18 +1,40 @@
-<?php namespace Orangehill\Photon;
+<?php
+
+/**
+ * Description of TestController
+ *
+ * @author Ivan Batić <ivan.batic@live.com>
+ */
+
+namespace Orangehill\Photon;
 
 class TestController extends \BaseController {
 
-    public $repo;
-
-    public function __construct(ModuleRepository $repo)
-    {
-        $this->repo = $repo;
-    }
-
-    public function test()
-    {
-        dd($this->repo->test());
-        dd('finre');
+    public function index() {
+        $field = new \Orangehill\Photon\Library\Form\Fields\Text\Text();
+        $field->setAttribute('name', 'my-name');
+        $field->setValue('Ivan Batic');
+        $field->render();
+//        $ivan = new Input\TextInputField();
+//        $ivan->setName('First Name')
+//            ->setValue('Ivan')
+//            ->setTitle('Your First Name')
+//            ->setTooltip('Enter your first name here');
+//
+//        $marko = clone $ivan;
+//        $marko->setValue('Marko');
+//
+//        $ages = new Input\TextArrayField();
+//        $ages->setName('Ages of Youth')->setValue(array(13, 14, 16, 19, 21));
+//
+//        $fields = new Input\FieldCollection();
+//        $fields->add($ivan)->add($marko)->add($ages);
+//
+//
+//        $view = \View::make('photon::admin.field_poc', array(
+//                'input_fields' => $fields
+//        ));
+//        return $view;
     }
 
 }
