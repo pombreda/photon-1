@@ -8,120 +8,112 @@ class SettingsController extends \BaseController {
 	 */
 	public $data = array(
 
-		/**
-		 * fieldData is used to build module field editing section template
-		 */
-		'fieldData' => array(
-
-			/**
-			 * field_type contains field_type value and default column_type pair
-			 */
-			'field_types' => array(
-				array('input-text', 'string'),
-				array('rich-text', 'text'),
-				array('image', 'string'),
-				array('inline-image', 'string'),
-				array('boolean', 'smallInteger'),
-				array('calendar', 'timestamp'),
-				array('one-to-many', 'integer'),
-				array('many-to-many', 'disabled'),
-				array('weight', 'integer'),
-				array('hidden', 'string')
-			),
-			'relation_tables' => array(),
-			'column_types' => array(
-				'string',
-				'integer',
-				'text',
-				'smallInteger',
-				'bigInteger',
-				'float',
-				'boolean',
-				'date',
-				'dateTime',
-				'time',
-				'timestamp',
-				'binary'
-			)
-	    ),
 	    'breadcrumbs' =>array(
 		    	array(
 		    		'url' => 'javascript:;',
 		    		'anchor' => 'Settings'
 	    		)
 	    	),
-	    'moduleId' => false,
+	    'moduleId' => null,
 	    'isFolder' => false,
-	    'nextAutoIncrement' => false,
+	    'nextAutoIncrement' => null,
 	    'parentModules' => array(),
 	    'module' => array(),
 	    'fields' => array(),
 	    'fieldsJson' => array(),
     );
+    public $settingsValidate;
 
-	/**
-	 * Constructor
-	 */
-	public function __construct()
+	public function __construct(SettingsValidate $validate = null)
 	{
-
+		$this->settingsValidate = $validate ?: new SettingsValidate;
 	}
 
 	/**
 	 * Init function
 	 * @param int $id
 	 */
-	public function init($id)
+	public function init($id = null)
 	{
-
-		$this->data['moduleId'] = \Input::get('module_id') ? \Input::get('module_id') : $id;
+		$this->data['moduleId'] = \Input::get('module_id') ?: $id;
 		$this->data['nextAutoIncrement'] = AdminController::getNextAutoIncrement('fields');
+		$this->data['parentModules'] = $this->getParentModules($id);
 
-		if(is_numeric($this->data['moduleId']))
-		{
+		if(is_numeric($this->data['moduleId'])) {
 			$this->data['module'] = Module::find($id);
-			$this->data['isFolder'] = isset($this->data['module']->is_folder) && $this->data['module']->is_folder == 1;
-
-			$this->data['parentModules'] = Module::roots()->where('id', '!=', $id)->get();
 			$this->data['fields'] = $this->data['module']->fields;
 			$this->data['fieldsJson'] = $this->data['fields']->toJson();
-		}
-		else
-		{
-			$this->data['parentModules'] = Module::roots()->get();
+			$this->data['isFolder'] = isset($this->data['module']->is_folder) && $this->data['module']->is_folder == 1;
 		}
 
 	}
 
 	/**
-	 * Process the Settings Page Form POST data.
+	 * Default GET method
+	 * @param  int $id
 	 * @return Response
 	 */
-	public function postSettings()
+	public function getIndex($id = null)
 	{
+		// Initialize the Settings Page
+		$this->init($id);
+		// Show the Settings Page
+		return \View::make('photon::admin.settings', $this->data);
+	}
 
-		$fieldIds = $this->extractFieldIds();
-		$validate = $this->validate($fieldIds);
+	/**
+	 * Default POST method
+	 * @param  int $id
+	 * @return Response
+	 */
+	public function postIndex($id = null)
+	{
+		// Initialize the Settings Page
+		$this->init($id);
 
-		if (\Request::ajax())
-		{
-			if($validate!==true) return $this->jsonResponse('error', $validate);
+		// Extract all field IDs
+		$fieldIds = $this->extractFieldIds(\Input::all());
+
+		$validate = $this->settingsValidate->validate($fieldIds, $id);
+
+		if (\Request::ajax()) {
+			if($validate!==true) {
+				return $this->jsonResponse('error', $validate);
+			}
 
 			// For AJAX requests run save function in verbose mode (only print pending changes - don't make any changes)
 			$verbose = $this->save($fieldIds, true);
 
 			// if $verbose is false there are no changes to be saved
-			if (!$verbose) return $this->jsonResponse('error', 'No changes detected');
+			if (!$verbose) {
+				return $this->jsonResponse('error', 'No changes detected');
+			}
 
 			return $this->jsonResponse('success', $verbose);
-		}
-		else
-		{
-			if($validate!==true) throw new \UnexpectedValueException($validate);
+
+		} else {
+			if($validate!==true) {
+				throw new \UnexpectedValueException($validate);
+			}
 
 			// For regular POST requests save data
 			return $this->save($fieldIds);
+
 		}
+
+	}
+
+	/**
+	 * Gets All Available Parent Modules
+ 	 * @param int $id
+	 * @return Object
+	 */
+	public function getParentModules($id = null)
+	{
+		if(is_numeric($id)) {
+			return Module::roots()->where('id', '!=', $id)->get();
+		}
+		return Module::roots()->get();
 	}
 
 	protected function updateFolderModuleType($module, $verbose)
@@ -608,117 +600,17 @@ class SettingsController extends \BaseController {
 	 * Loops through all received fields (\Input::all()) to extract all field IDs
 	 * @return array Array of IDs
 	 */
-	protected function extractFieldIds()
+	protected function extractFieldIds($input)
 	{
-		$input = \Input::all();
-
 		$output = array();
-
-		foreach($input as $key=>$var)
-		{
-			if(substr($key, 0, 8) === "field_id") $output[] = str_replace('field_id', '', $key);
+		if (is_array($input)) {
+			foreach($input as $key=>$var) {
+				if(substr($key, 0, 8) === "field_id") {
+					$output[] = str_replace('field_id', '', $key);
+				}
+			}
 		}
-
 		return $output;
-	}
-
-	/**
-	 * Validates submitted form data
-	 * @param array $fieldsIds
-	 * @return Mixed
-	 */
-	protected function validate($fieldIds = array())
-	{
-		// Set editing mode to false (meaning insertion mode is used)
-		$editing = false;
-
-		// If $this->data['moduleId'] is numeric enable editing mode
-		if (is_numeric($this->data['moduleId'])) $editing = true;
-
-		if(empty($fieldIds) && \Input::get('is_folder')!=='1') {
-			 return 'No module fields specified.';
-		}
-
-		// Check if remove module request is received
-		if(\Input::get('remove_request')==1)
-		{
-			// Check if there are dependant modules
-			$module = Module::where('parent_module', \Input::get('module_id'))->first();
-			if(!is_null($module))
-			{
-				return "'" . $module->module_name . "' is a child module of current module. Removal operation is not possible.";
-			}
-
-			// Check if there are dependant fields
-			$field = Field::where('relation_table', \Input::get('module_id'))->first();
-
-			if(!is_null($field))
-			{
-				return "'" . $field->field_name . "' uses current module as a relation table. Removal operation is not possible.";
-			}
-		}
-
-		$input = \Input::all();
-
-		// Module Rules
-		$rules = array();
-
-		$rules['module_name'] = 'required|unique:modules,module_name';
-		$rules['table_name'] = 'required|not_in:fields,groups,migrations,modules,throttle,users,users_groups|unique:modules,table_name';
-
-		$messages = array();
-
-		// Individual Fields Rules
-		foreach ($fieldIds as $fieldId)
-		{
-			$rules['field_name' . $fieldId] = 'required|not_in:' . $this->getNotInArray($fieldIds, 'field_name', $fieldId);
-			$rules['column_name' . $fieldId] = 'required|not_in:' . $this->getNotInArray($fieldIds, 'column_name', $fieldId);
-
-			// Set custom messages
-			$messages['field_name' . $fieldId . '.required'] = 'At least one field name is empty.';
-			$messages['field_name' . $fieldId . '.not_in'] = 'Field name \'' . \Input::get('field_name' . $fieldId). '\' is not unique.';
-			$messages['column_name' . $fieldId . '.required'] = 'At least one column name is empty.';
-			$messages['column_name' . $fieldId . '.not_in'] = 'Column name \'' . \Input::get('column_name' . $fieldId). '\' is not unique.';
-		}
-
-		// Modify rules if in editing mode
-		if ($editing)
-		{
-			// Module Rules
-			$rules['module_name'] .= "," . $this->data['moduleId'];
-			unset($rules['table_name']);
-		}
-
-		$validator = \Validator::make($input, $rules, $messages);
-
-		// If validation fails return first message
-		if ($validator->fails())
-		{
-		    $messages = $validator->messages();
-		    return $messages->first();
-		}
-
-		return true;
-	}
-
-	/**
-	 * Builds a not_in comma delimited list
-	 * @param  array $fieldIds
-	 * @param  string $name
-	 * @param  int $excludeId
-	 * @return array
-	 */
-	protected function getNotInArray($fieldIds, $name, $excludeId)
-	{
-		$notIn = array();
-
-		foreach ($fieldIds as $fieldId)
-		{
-			if ($fieldId == $excludeId) continue;
-			$notIn[] = \Input::get($name . $fieldId);
-		}
-
-		return implode(",", $notIn);
 	}
 
 }

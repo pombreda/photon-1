@@ -98,7 +98,7 @@ Settings
 	        <div class="span2">
 	            <div class="controls">
 	                <select name="field_type" id="field_type">
-	                	@foreach($fieldData['field_types'] as $field_type)
+	                	@foreach(\Config::get('photon::settings.fieldTypes') as $field_type)
 	                    <option value="{{$field_type[0]}}" data-column-type="{{$field_type[1]}}">{{ucwords(str_replace('-', ' ', $field_type[0]))}}</option>
 	                    @endforeach
 	                </select>
@@ -142,7 +142,7 @@ Settings
 	        <div class="span2">
 	            <div class="controls">
 	                <select name="column_type" id="column_type">
-	                	@foreach($fieldData['column_types'] as $column_type)
+	                	@foreach(\Config::get('photon::settings.columnTypes') as $column_type)
 	                    <option value="{{$column_type}}">{{$column_type}}</option>
 	                    @endforeach
 	                </select>
