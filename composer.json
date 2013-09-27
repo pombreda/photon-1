@@ -22,7 +22,8 @@
         "classmap": [
             "src/migrations",
             "controllers",
-            "models"
+            "models",
+            "library"
         ],
         "psr-0": {
             "Orangehill\\Photon": "src/"
