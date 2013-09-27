@@ -18,10 +18,14 @@
         "baum/baum": "~1.0",
         "way/generators": "dev-master"
     },
+    "require-dev": {
+        "mockery/mockery": "dev-master"
+    },
     "autoload": {
         "classmap": [
             "src/migrations",
             "controllers",
+            "repositories",
             "models"
         ],
         "psr-0": {

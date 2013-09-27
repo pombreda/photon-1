@@ -24,9 +24,10 @@ class SettingsController extends \BaseController {
     );
     public $settingsValidate;
 
-	public function __construct(SettingsValidate $validate = null)
+	public function __construct(SettingsValidate $validate)
 	{
-		$this->settingsValidate = $validate ?: new SettingsValidate;
+		// $this->settingsValidate = $validate ?: new SettingsValidate;
+		$this->settingsValidate = $validate;
 	}
 
 	/**

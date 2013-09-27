@@ -5,6 +5,7 @@
  */
 Route::group(array('before' => 'is_admin'), function()
 {
+	Route::get('admin/test', '\Orangehill\Photon\TestController@test');
 	// Route that handles Ajax requests made by jstree plugin
 	Route::controller('admin/jstree/{table?}', '\Orangehill\Photon\JsTreeController');
 	// Route that feeds jstree plugin with initial settings

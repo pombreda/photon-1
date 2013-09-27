@@ -30,9 +30,17 @@ class PhotonServiceProvider extends ServiceProvider {
 	 */
 	public function register()
 	{
+		$this->app->bind(
+	      'Orangehill\Photon\ModuleRepository',
+	      'Orangehill\Photon\ModuleEloquentRepository'
+	    );
+		$this->app->bind(
+	      'Orangehill\Photon\FieldRepository',
+	      'Orangehill\Photon\FieldEloquentRepository'
+	    );
 		$this->app['photon'] = $this->app->share(function($app)
 		{
-			return new Photon;
+			return new Photon($app->make('photon.repository'));
 		});
 	}
 
