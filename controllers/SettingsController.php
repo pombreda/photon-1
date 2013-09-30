@@ -24,10 +24,9 @@ class SettingsController extends \BaseController {
     );
     public $settingsValidate;
 
-	public function __construct(SettingsValidate $validate)
+	public function __construct(SettingsValidator $settingsValidator)
 	{
-		// $this->settingsValidate = $validate ?: new SettingsValidate;
-		$this->settingsValidate = $validate;
+		$this->settingsValidate = $settingsValidator;
 	}
 
 	/**
@@ -78,8 +77,8 @@ class SettingsController extends \BaseController {
 		$validate = $this->settingsValidate->validate($fieldIds, $id);
 
 		if (\Request::ajax()) {
-			if($validate!==true) {
-				return $this->jsonResponse('error', $validate);
+			if($validate['fails']) {
+				return $this->jsonResponse('error', $validate['message']);
 			}
 
 			// For AJAX requests run save function in verbose mode (only print pending changes - don't make any changes)

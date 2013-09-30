@@ -1,22 +1,22 @@
 <?php namespace Orangehill\Photon;
 
-class FieldEloquentRepository implements FieldRepository {
+class FieldEloquentRepository implements FieldRepositoryInterface {
 
     /**
      * Returns a model class
-     * @return object
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function model()
     {
-        return Field;
+        return new Field;
     }
 
     /**
-     * Counts dependant fields
+     * Gets dependant field name
      * @param  int $fieldId
-     * @return int
+     * @return string
      */
-    public function countDependantFields($fieldId)
+    public function getDependantFieldName($fieldId)
     {
         $field = $this->model()
             ->where('relation_table', $fieldId)
@@ -25,7 +25,7 @@ class FieldEloquentRepository implements FieldRepository {
             return $field->field_name;
         }
 
-        return $false;
+        return null;
     }
 
 }

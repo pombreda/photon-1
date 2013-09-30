@@ -3,9 +3,9 @@
 use Mockery as m;
 use Orangehill\Photon\ModuleEloquentRepository;
 use Orangehill\Photon\FieldEloquentRepository;
-use Orangehill\Photon\SettingsValidate;
+use Orangehill\Photon\SettingsValidator;
 
-class SettingsValidateTest extends PHPUnit_Framework_TestCase {
+class SettingsValidatorTest extends PHPUnit_Framework_TestCase {
 
     protected $module;
     protected $field;
@@ -15,8 +15,8 @@ class SettingsValidateTest extends PHPUnit_Framework_TestCase {
         $this->module = m::mock(new ModuleEloquentRepository);
         $this->field = m::mock(new FieldEloquentRepository);
         $app = $this->mockApp();
-        $this->settingsValidate = new SettingsValidate($this->module, $this->field);
-        $this->settingsValidate->app = $app;
+        $this->settingsValidator = new SettingsValidator($this->module, $this->field);
+        $this->settingsValidator->app = $app;
     }
 
     public function tearDown()
@@ -36,113 +36,129 @@ class SettingsValidateTest extends PHPUnit_Framework_TestCase {
         return $app;
     }
 
+    public function testFormatResponse()
+    {
+        $output1 = $this->settingsValidator->formatResponse('Test Message.', false);
+        $expected1 = array('fails' => false, 'message' => 'Test Message.');
+        $output2 = $this->settingsValidator->formatResponse('', true);
+        $expected2 = array('fails' => true);
+
+        $this->assertEquals($expected1, $output1);
+        $this->assertEquals($expected2, $output2);
+    }
+
     public function testCheckDependantModulesExist()
     {
-        $this->settingsValidate->module
+        $this->settingsValidator->module
             ->shouldReceive('countDependantModules')
             ->with('1')
             ->once()
             ->andReturn('foo');
-        $output = $this->settingsValidate->checkDependantModules('1');
-        $expected = "'foo' is a child module of current module. Removal operation is not possible.";
+        $output = $this->settingsValidator->checkDependantModules('1');
+        $expected = array("fails" => true, "message" => "'foo' is a child module of current module. Removal operation is not possible.");
 
         $this->assertEquals($expected, $output);
     }
 
     public function testCheckDependantModulesDoesntExist()
     {
-        $this->settingsValidate->module
+        $this->settingsValidator->module
             ->shouldReceive('countDependantModules')
             ->with('1')
             ->once()
             ->andReturn(false);
-        $output = $this->settingsValidate->checkDependantModules('1');
+        $output = $this->settingsValidator->checkDependantModules('1');
+        $expected = array("fails" => false);
 
-        $this->assertFalse($output);
+        $this->assertEquals($expected, $output);
     }
 
     public function testCheckDependantFieldsExist()
     {
-        $this->settingsValidate->field
+        $this->settingsValidator->field
             ->shouldReceive('countDependantFields')
             ->with('1')
             ->once()
             ->andReturn('foo');
-        $output = $this->settingsValidate->checkDependantFields('1');
-        $expected = "'foo' uses current module as a relation table. Removal operation is not possible.";
+        $output = $this->settingsValidator->checkDependantFields('1');
+        $expected = array("fails" => true, "message" => "'foo' uses current module as a relation table. Removal operation is not possible.");
+
+        $this->assertEquals($expected, $output);
+
 
         $this->assertEquals($expected, $output);
     }
 
     public function testCheckDependantFieldsDoesntExist()
     {
-        $this->settingsValidate->field
+        $this->settingsValidator->field
             ->shouldReceive('countDependantFields')
             ->with('1')
             ->once()
             ->andReturn(false);
-        $output = $this->settingsValidate->checkDependantFields('1');
+        $output = $this->settingsValidator->checkDependantFields('1');
+        $expected = array("fails" => false);
 
-        $this->assertFalse($output);
+        $this->assertEquals($expected, $output);
     }
 
     public function testCheckNoModuleFields()
     {
-        $this->settingsValidate->app['request']
+        $this->settingsValidator->app['request']
             ->shouldReceive('get')
             ->with('is_folder')
             ->once()
             ->andReturn(0);
-        $output = $this->settingsValidate->validate(array());
-        $expected = "No module fields specified.";
+        $output = $this->settingsValidator->validate(array());
+        $expected = array("fails" => true, "message" => "No module fields specified.");
 
         $this->assertEquals($expected, $output);
     }
 
     public function testValidates()
     {
-        $this->settingsValidate->app['request']
+        $this->settingsValidator->app['request']
             ->shouldReceive('get')
             ->with('is_folder')
             ->andReturn(0);
-        $this->settingsValidate->app['request']
+        $this->settingsValidator->app['request']
             ->shouldReceive('get')
             ->with('remove_request')
             ->once()
             ->andReturn(0);
-        $this->settingsValidate->app['request']
+        $this->settingsValidator->app['request']
             ->shouldReceive('all')
             ->once()
             ->andReturn(array());
-        $this->settingsValidate->app['request']
+        $this->settingsValidator->app['request']
             ->shouldReceive('get')
             ->with('field_name1')
             ->once()
             ->andReturn('FN1');
-        $this->settingsValidate->app['request']
+        $this->settingsValidator->app['request']
             ->shouldReceive('get')
             ->with('column_name1')
             ->once()
             ->andReturn('CN1');
-        $this->settingsValidate->app['validator']
+        $this->settingsValidator->app['validator']
             ->shouldReceive('make')
             ->with(array(), m::any(), m::any())
             ->once()
-            ->andReturn($this->settingsValidate->app['validator']);
-        $this->settingsValidate->app['validator']
+            ->andReturn($this->settingsValidator->app['validator']);
+        $this->settingsValidator->app['validator']
             ->shouldReceive('fails')
             ->once()
             ->andReturn(true);
-        $this->settingsValidate->app['validator']
+        $this->settingsValidator->app['validator']
             ->shouldReceive('messages')
             ->once()
-            ->andReturn($this->settingsValidate->app['validator']);
-        $this->settingsValidate->app['validator']
+            ->andReturn($this->settingsValidator->app['validator']);
+        $this->settingsValidator->app['validator']
             ->shouldReceive('first')
             ->once()
             ->andReturn('Message');
-        $expected = "Message";
-        $output = $this->settingsValidate->validate([1]);
+        $expected = array("fails" => true, "message" => "Message");
+        $output = $this->settingsValidator->validate([1]);
 
         $this->assertEquals($expected, $output);
     }
@@ -152,13 +168,13 @@ class SettingsValidateTest extends PHPUnit_Framework_TestCase {
         $fieldIds = [1, 2, 3, 4];
         $name = 'field';
         $excludeId = 2;
-        $this->settingsValidate->app['request']
+        $this->settingsValidator->app['request']
             ->shouldReceive('get')
             ->with(m::any())
             ->times(3)
             ->andReturn('field1', 'field3', 'field4');
         $expected = 'field1,field3,field4';
-        $output = $this->settingsValidate->getNotInArray($fieldIds, $name, $excludeId);
+        $output = $this->settingsValidator->getNotInArray($fieldIds, $name, $excludeId);
 
         $this->assertEquals($expected, $output);
     }

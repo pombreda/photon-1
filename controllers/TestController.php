@@ -10,7 +10,19 @@ namespace Orangehill\Photon;
 
 class TestController extends \BaseController {
 
+    /**
+     * Module repository instance
+     * @var Orangehill\Photon\ModuleRepository
+     */
+    public $module;
+
+    public function __construct(ModuleRepositoryInterface $module) {
+        $this->module = $module;
+    }
+
+
     public function index() {
+        dd($this->module->test());
         $field = new \Orangehill\Photon\Library\Form\Fields\Text\Text();
         $field->setAttribute('name', 'my-name');
         $field->setValue('Ivan Batic');

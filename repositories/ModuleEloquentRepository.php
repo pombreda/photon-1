@@ -1,22 +1,27 @@
 <?php namespace Orangehill\Photon;
 
-class ModuleEloquentRepository implements ModuleRepository {
+class ModuleEloquentRepository implements ModuleRepositoryInterface {
 
     /**
      * Returns a model class
-     * @return object
+     * @return \Illuminate\Database\Eloquent\Model
      */
     public function model()
     {
-        return Module;
+        return new Module;
+    }
+
+    public function test()
+    {
+        return $this->model()->all();
     }
 
     /**
-     * Counts dependant modules
+     * Gets dependant module name
      * @param  int $moduleId
-     * @return int
+     * @return string
      */
-    public function countDependantModules($moduleId)
+    public function getDependantModuleName($moduleId)
     {
         $module = $this->model()
             ->where('parent_module', $moduleId)
@@ -25,7 +30,7 @@ class ModuleEloquentRepository implements ModuleRepository {
             return $module->module_name;
         }
 
-        return false;
+        return null;
     }
 
 }
