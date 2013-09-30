@@ -10,13 +10,13 @@ class SettingsValidator {
 
     /**
      * Module repository instance
-     * @var Orangehill\Photon\ModuleRepository
+     * @var Orangehill\Photon\ModuleRepositoryInterface
      */
 	public $module;
 
     /**
      * Field repository instance
-     * @var Orangehill\Photon\FieldRepository
+     * @var Orangehill\Photon\FieldRepositoryInterface
      */
 	public $field;
 
@@ -48,7 +48,7 @@ class SettingsValidator {
 	 */
 	public function checkDependantFields($fieldId)
 	{
-		$field = $this->field->countDependantFields($fieldId);
+		$field = $this->field->getDependantFieldName($fieldId);
 		if($field !== false) {
 			return $this->formatResponse("'" . $field . "' uses current module as a relation table. Removal operation is not possible.");
 		}

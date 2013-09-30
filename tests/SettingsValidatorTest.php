@@ -50,7 +50,7 @@ class SettingsValidatorTest extends PHPUnit_Framework_TestCase {
     public function testCheckDependantModulesExist()
     {
         $this->settingsValidator->module
-            ->shouldReceive('countDependantModules')
+            ->shouldReceive('getDependantModuleName')
             ->with('1')
             ->once()
             ->andReturn('foo');
@@ -63,7 +63,7 @@ class SettingsValidatorTest extends PHPUnit_Framework_TestCase {
     public function testCheckDependantModulesDoesntExist()
     {
         $this->settingsValidator->module
-            ->shouldReceive('countDependantModules')
+            ->shouldReceive('getDependantModuleName')
             ->with('1')
             ->once()
             ->andReturn(false);
@@ -76,7 +76,7 @@ class SettingsValidatorTest extends PHPUnit_Framework_TestCase {
     public function testCheckDependantFieldsExist()
     {
         $this->settingsValidator->field
-            ->shouldReceive('countDependantFields')
+            ->shouldReceive('getDependantFieldName')
             ->with('1')
             ->once()
             ->andReturn('foo');
@@ -92,7 +92,7 @@ class SettingsValidatorTest extends PHPUnit_Framework_TestCase {
     public function testCheckDependantFieldsDoesntExist()
     {
         $this->settingsValidator->field
-            ->shouldReceive('countDependantFields')
+            ->shouldReceive('getDependantFieldName')
             ->with('1')
             ->once()
             ->andReturn(false);

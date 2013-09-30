@@ -15,14 +15,17 @@ class TestController extends \BaseController {
      * @var Orangehill\Photon\ModuleRepository
      */
     public $module;
+    public $settingsValidator;
 
-    public function __construct(ModuleRepositoryInterface $module) {
+    public function __construct(ModuleRepositoryInterface $module, SettingsValidator $settingsValidator) {
+        $this->settingsValidator = $settingsValidator;
         $this->module = $module;
     }
 
 
     public function index() {
-        dd($this->module->test());
+        $output = $this->settingsValidator->checkDependantModules('1');
+        // dd($this->module->getDependantModuleName('1'));
         $field = new \Orangehill\Photon\Library\Form\Fields\Text\Text();
         $field->setAttribute('name', 'my-name');
         $field->setValue('Ivan Batic');

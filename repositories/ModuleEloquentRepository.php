@@ -11,11 +11,6 @@ class ModuleEloquentRepository implements ModuleRepositoryInterface {
         return new Module;
     }
 
-    public function test()
-    {
-        return $this->model()->all();
-    }
-
     /**
      * Gets dependant module name
      * @param  int $moduleId
