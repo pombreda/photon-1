@@ -11,7 +11,7 @@ class MigrationGenerator {
      * @param array $fields
      * @return void
      */
-    public function create($table, $fields) {
+    public function create($table, array $fields) {
         $params = array(
             'name'     => 'create_' . $table,
             '--fields' => $this->concatFields($fields)
