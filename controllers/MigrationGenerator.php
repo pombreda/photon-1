@@ -5,78 +5,105 @@ namespace Orangehill\Photon;
 class MigrationGenerator {
 
     /**
-     * Generates a migration that creates a new table
-     * Original generator CLI command example: php artisan generate:migration create_posts_table --fields="title:string, body:text"
-     * @param string $table
-     * @param array $fields
-     * @return void
+     * Prepares an argument list for the Artisan command
+     * @param string $command Command name
+     * @param string $table Table name
+     * @param array $fields Array of fields ([name => type])
+     * @return array
+     * @throws MigrationException
      */
-    public function create($table, array $fields) {
-        $params = array(
-            'name'     => 'create_' . $table,
-            '--fields' => $this->concatFields($fields)
+    public static function prepareArguments($command, $table, array $fields = array()) {
+        if (!is_string($table)) {
+            throw new MigrationException("Invalid `table` argument. Must be a string.");
+        } else if (!is_string($command)) {
+            throw new MigrationException("Invalid `command` argument. Must be a string.");
+        };
+
+        $args = array(
+            'name'     => self::createMigrationName($command, $table, $fields),
+            '--fields' => self::concatFields($fields)
         );
-        \Artisan::call('generate:migration', $params);
+        return $args;
     }
 
     /**
-     * Generates a migration that adds a field to existing table
-     * Original generator CLI command example: php artisan generate:migration add_user_id_to_posts_table --fields="title:string, body:text"
+     * Creates a migration name based on input parameters
+     * @param string $command
      * @param string $table
      * @param array $fields
-     * @return void
-     */
-    public function add($table, array $fields) {
-        $key = key($fields);
-        $params = array(
-            'name'     => "add_{$key}_to_{$table}_table",
-            '--fields' => $this->concatFields($fields)
-        );
-        \Artisan::call('generate:migration', $params);
-    }
-
-    /**
-     * Generates a migration that removes a field from existing table
-     * Original generator CLI command example: php artisan generate:migration remove_user_id_from_posts_table --fields="title:string, body:text"
-     * @param string $table
-     * @param array $fields
-     * @return void
-     */
-    public function remove($table, array $fields) {
-        $key = key($fields);
-        $params = array(
-            'name'     => "remove_{$key}_from_{$table}_table",
-            '--fields' => $this->concatFields($fields)
-        );
-        \Artisan::call('generate:migration', $params);
-    }
-
-    /**
-     * Generates a migration that destroys a table
-     * Original generator CLI command example: php artisan generate:migration destroy_posts_table --fields="title:string, body:text"
-     * @param string $table
-     * @param array $fields
-     * @return void
-     */
-    public function destroy($table, array $fields) {
-        $params = array(
-            'name'     => "destroy_{$table}",
-            '--fields' => $this->concatFields($fields)
-        );
-        \Artisan::call('generate:migration', $params);
-    }
-
-    /**
-     * Returns a string formatted as e.g. 'key0:val0, key1:val1'
-     * @param  array $array
      * @return string
+     * @throws MigrationException
+     * @see Orangehill\Photon\MigrationGenerator\MigrationGeneratorTest::testMigrationNameCreation
+     * @see Orangehill\Photon\MigrationGenerator\MigrationGeneratorTest::testMigrationNameException
      */
-    protected function concatFields(array $array) {
-        $output = array();
-        foreach ($array as $key => $val) {
-            $output[] = $key . ':' . $val;
+    public static function createMigrationName($command, $table, array $fields = array()) {
+        $key = self::parseFieldsToMigrationKey($fields);
+        $table = (string) $table;
+        $command = (string) $command;
+        $name = '';
+        switch ($command) {
+            case 'create':
+                $name = "create_{$table}_table";
+                break;
+            case 'add':
+                $name = "add_{$key}";
+                $name .= $table ? "_to_{$table}_table" : '';
+                break;
+            case 'remove':
+                $name = "remove_{$key}";
+                $name .= $table ? "_from_{$table}_table" : '';
+                break;
+            case 'destroy':
+                $name = "destroy_{$table}_table";
+                break;
+            default:
+                throw new MigrationException("Migration method `{$command}` does not exist");
+                break;
         }
-        return implode(', ', $output);
+        return str_replace('__', '_', snake_case(str_replace('-', '_', $name)));
+    }
+
+    /**
+     * Returns a key segment for the migration file name
+     * @param array $fields
+     * @return string
+     * @see Orangehill\Photon\MigrationGenerator\MigrationGeneratorTest::testKeyParsing
+     */
+    public static function parseFieldsToMigrationKey(array $fields = array()) {
+        $entries = array();
+        foreach ($fields as $field) {
+            $exp = explode(':', $field);
+            if (count($exp) > 1) {
+                $entries[] = strtolower($exp[0]);
+            }
+        }
+        return join('_and_', $entries);
+    }
+
+    /**
+     * Calls the Artisan command 
+     * @param string $name
+     * @param array $arguments
+     */
+    public static function __callStatic($name, $arguments) {
+        \Artisan::call('generate:migration', self::prepareArguments($name, $arguments[0], $arguments[1]));
+    }
+
+    /**
+     * Concats the array values, excluding invalid elements
+     * @param array $array
+     * @return string
+     * @see Orangehill\Photon\MigrationGenerator\MigrationGeneratorTest::testFieldConcatenation
+     */
+    public static function concatFields(array $array = array()) {
+        $output = array();
+        foreach ($array as $key => $type) {
+            if (is_string($type) && count(explode(':', $type)) > 1) {
+                $output[] = $type;
+            }
+        }
+        $out = implode(', ', $output);
+        return $out;
     }
 
 }
