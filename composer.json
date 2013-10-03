@@ -27,7 +27,8 @@
             "controllers",
             "models",
             "library",
-            "repositories"
+            "repositories",
+            "exceptions"
         ],
         "psr-0": {
             "Orangehill\\Photon": "src/"
