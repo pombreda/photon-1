@@ -11,6 +11,9 @@ class MigrationGenerator {
      * @param array $fields Array of fields ([name => type])
      * @return array
      * @throws MigrationException
+     * @see Orangehill\Photon\MigrationGenerator\MigrationGeneratorTest::testArgumentPreparation
+     * @see Orangehill\Photon\MigrationGenerator\MigrationGeneratorTest::testArgumentPreparationWithInvalidTableName
+     * @see Orangehill\Photon\MigrationGenerator\MigrationGeneratorTest::testArgumentPreparationWithInvalidCommandName
      */
     public static function prepareArguments($command, $table, array $fields = array()) {
         if (!is_string($table)) {
