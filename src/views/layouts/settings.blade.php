@@ -15,7 +15,7 @@
                 <h2><small>Edit Module</small></h2>
                 <h3><small>Use the form below to set module parameters.</small></h3>
             </header>
-            <form class="form-horizontal" id="admin-settings-form" method="post" action="{{\Request::url()}}">
+            <form class="form-horizontal" id="admin_settings_form" method="post" action="{{\Request::url()}}">
                 @yield('content')
                 @yield('form-controls')
             </form>
