@@ -138,7 +138,7 @@ class ModuleController extends \BaseController {
 		$this->data['breadcrumbs'] = array(
 								    	array(
 								    		'url' => 'javascript:;',
-								    		'anchor' => $this->data['module']->module_name
+								    		'anchor' => $this->data['module']->name
 							    		)
 							    	);
 

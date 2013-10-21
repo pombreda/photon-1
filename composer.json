@@ -23,12 +23,8 @@
     },
     "autoload": {
         "classmap": [
-            "src/migrations",
-            "controllers",
-            "models",
-            "library",
-            "repositories",
-            "exceptions"
+            "src",
+            "src/migrations"
         ],
         "psr-0": {
             "Orangehill\\Photon": "src/"

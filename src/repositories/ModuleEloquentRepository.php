@@ -22,7 +22,7 @@ class ModuleEloquentRepository implements ModuleRepositoryInterface {
             ->where('parent_module', $moduleId)
             ->first();
         if(!is_null($module)) {
-            return $module->module_name;
+            return $module->name;
         }
 
         return null;

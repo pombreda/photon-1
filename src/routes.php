@@ -12,6 +12,10 @@ Route::group(array('before' => 'is_admin'), function() {
         Route::controller('admin/settings/{id?}', '\Orangehill\Photon\SettingsController');
         // Testing route
         Route::any('admin/test', '\Orangehill\Photon\TestController@index');
+
+        // Creator REST controller
+        Route::controller('/admin/creator', '\Orangehill\Photon\CreatorController');
+
         // Main admin resource controller
         Route::controller('admin', '\Orangehill\Photon\AdminController');
     });

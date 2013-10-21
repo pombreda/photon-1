@@ -15,14 +15,14 @@
         <li>
             <a href="javascript:/" >
                 <i class="icon-photon @if($item['icon']!=''){{$item['icon']}}@else{{'document_alt_stroke'}}@endif"></i>
-                <span class="nav-selection">{{$item['module_name']}}</span>
+                <span class="nav-selection">{{$item['name']}}</span>
             </a>
             @if ($item['children'])
             <div class="sub-nav">
                 <ul class="nav">
                     @foreach ($item['children'] as $child)
                     <li>
-                        <a href="{{\Request::root()}}/admin/{{$child->table_name}}">{{$child->module_name}}</a>
+                        <a href="{{\Request::root()}}/admin/{{$child->table_name}}">{{$child->name}}</a>
                     </li>
                     @endforeach
                 </ul>

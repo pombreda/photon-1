@@ -2,17 +2,17 @@
 
 {{-- Title --}}
 @section('title')
-<title>{{ Config::get('app.projectName') }} - {{ $module->module_name }}</title>
+<title>{{ Config::get('app.projectName') }} - {{ $module->name }}</title>
 @stop
 
 @section('menuTitle')
-{{$module->module_name}}
+{{$module->name}}
 @stop
 
 {{-- Content --}}
 @section('content')
 <div class="container-fluid" id="module-settings">
-    <div class="form-legend">{{ $module->module_name }}</div>
+    <div class="form-legend">{{ $module->name }}</div>
     @if(isset($entry->id))<input type="hidden" name="id" id="id" value="{{$entry->id}}" />@endif
     @foreach($fields as $field)
     @include('photon::admin.field-types.' . $field->field_type)
@@ -101,7 +101,7 @@
                                     "column_name" : "{{$fields[0]->column_name}}",
                                     @endif
                                     "table_name" : "{{\Request::segment(2)}}",
-                                    "module_name" : "{{$module->table_name}}"
+                                    "name" : "{{$module->table_name}}"
                                 };
                             }
                         }

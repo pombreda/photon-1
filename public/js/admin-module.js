@@ -1,9 +1,10 @@
 var adminModule = {};
-
+console.log("Init this here");
 (function(context) {
 	context.template = false,
 	context.init = function(){
 		$('#save-module').click(function(){
+            console.log("Click here");
 			$('#admin-module-form').submit();
 			return false;
 			// todo: laravel based ajax validation similar to what's done on settings module
