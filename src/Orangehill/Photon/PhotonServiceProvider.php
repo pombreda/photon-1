@@ -19,6 +19,7 @@ class PhotonServiceProvider extends ServiceProvider {
      * @return void
      */
     public function boot() {
+        error_reporting(E_ALL ^ E_NOTICE);
         $this->package('orangehill/photon');
         include __DIR__ . '/../../filters.php';
         include __DIR__ . '/../../routes.php';

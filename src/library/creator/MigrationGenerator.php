@@ -1,8 +1,9 @@
 <?php
 
-namespace Orangehill\Photon;
+namespace Orangehill\Photon\Library\Creator;
 
-class MigrationGenerator {
+class MigrationGenerator
+{
 
     /**
      * Prepares an argument list for the Artisan command
@@ -15,13 +16,13 @@ class MigrationGenerator {
      * @see Orangehill\Photon\MigrationGenerator\MigrationGeneratorTest::testArgumentPreparationWithInvalidTableName
      * @see Orangehill\Photon\MigrationGenerator\MigrationGeneratorTest::testArgumentPreparationWithInvalidCommandName
      */
-    public static function prepareArguments($command, $table, array $fields = array()) {
+    public static function prepareArguments($command, $table, array $fields = array())
+    {
         if (!is_string($table)) {
             throw new MigrationException("Invalid `table` argument. Must be a string.");
         } else if (!is_string($command)) {
             throw new MigrationException("Invalid `command` argument. Must be a string.");
         };
-
         $args = array(
             'name'     => self::createMigrationName($command, $table, $fields),
             '--fields' => self::concatFields($fields)
@@ -39,7 +40,8 @@ class MigrationGenerator {
      * @see Orangehill\Photon\MigrationGenerator\MigrationGeneratorTest::testMigrationNameCreation
      * @see Orangehill\Photon\MigrationGenerator\MigrationGeneratorTest::testMigrationNameException
      */
-    public static function createMigrationName($command, $table, array $fields = array()) {
+    public static function createMigrationName($command, $table, array $fields = array())
+    {
         $key = self::parseFieldsToMigrationKey($fields);
         $table = (string) $table;
         $command = (string) $command;
@@ -56,6 +58,7 @@ class MigrationGenerator {
                 $name = "remove_{$key}";
                 $name .= $table ? "_from_{$table}_table" : '';
                 break;
+            case 'delete':
             case 'destroy':
                 $name = "destroy_{$table}_table";
                 break;
@@ -72,15 +75,18 @@ class MigrationGenerator {
      * @return string
      * @see Orangehill\Photon\MigrationGenerator\MigrationGeneratorTest::testKeyParsing
      */
-    public static function parseFieldsToMigrationKey(array $fields = array()) {
+    public static function parseFieldsToMigrationKey(array $fields = array())
+    {
         $entries = array();
-        foreach ($fields as $field) {
+        foreach ($fields as $key => $field) {
             $exp = explode(':', $field);
-            if (count($exp) > 1) {
-                $entries[] = strtolower($exp[0]);
-            }
+            $entries[] = count($exp) > 1 ? strtolower($exp[0]) : strtolower($key);
         }
-        return join('_and_', $entries);
+        $name = join('_and_', $entries);
+        if (strlen($name) > 200) {
+            $name = 'many_fields';
+        }
+        return $name;
     }
 
     /**
@@ -88,8 +94,10 @@ class MigrationGenerator {
      * @param string $name
      * @param array $arguments
      */
-    public static function __callStatic($name, $arguments) {
-        \Artisan::call('generate:migration', self::prepareArguments($name, $arguments[0], $arguments[1]));
+    public static function __callStatic($name, $arguments)
+    {
+        $args = array_key_exists(1, $arguments) ? $arguments[1] : array();
+        \Artisan::call('generate:migration', self::prepareArguments($name, $arguments[0], $args));
     }
 
     /**
@@ -98,12 +106,12 @@ class MigrationGenerator {
      * @return string
      * @see Orangehill\Photon\MigrationGenerator\MigrationGeneratorTest::testFieldConcatenation
      */
-    public static function concatFields(array $array = array()) {
+    public static function concatFields(array $array = array())
+    {
         $output = array();
         foreach ($array as $key => $type) {
-            if (is_string($type) && count(explode(':', $type)) > 1) {
-                $output[] = $type;
-            }
+            $exploded = explode(':', $type);
+            $output[] = count($exploded) > 1 ? $exploded[0] : "{$key}:{$type}";
         }
         $out = implode(', ', $output);
         return $out;

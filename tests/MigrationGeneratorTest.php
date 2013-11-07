@@ -1,10 +1,12 @@
 <?php
 
-use Orangehill\Photon\MigrationGenerator;
+use Orangehill\Photon\Library\Creator\MigrationGenerator;
 
-class MigrationGeneratorTest extends PHPUnit_Framework_TestCase {
+class MigrationGeneratorTest extends PHPUnit_Framework_TestCase
+{
 
-    public function testMigrationNameCreation() {
+    public function testMigrationNameCreation()
+    {
         // Check create command
         $this->assertEquals('create_test_table', MigrationGenerator::createMigrationName('create', 'test'));
         $this->assertEquals('create_test_repository_table', MigrationGenerator::createMigrationName('create', 'test-repository', array('age:int')));
@@ -35,18 +37,21 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase {
     /**
      * @expectedException \OrangeHill\Photon\MigrationException
      */
-    public function testMigrationNameException() {
+    public function testMigrationNameException()
+    {
         $this->assertEquals('table', MigrationGenerator::createMigrationName('', ''));
     }
 
-    public function testKeyParsing() {
+    public function testKeyParsing()
+    {
         $this->assertSame('firstname', MigrationGenerator::parseFieldsToMigrationKey(array('firstname:string')));
         $this->assertSame('firstname_and_lastname', MigrationGenerator::parseFieldsToMigrationKey(array('firstname:string', 'lastname:string')));
         $this->assertSame('firstname_and_lastname', MigrationGenerator::parseFieldsToMigrationKey(array('firstname:string', 'lastname:string', 'unknown')));
         $this->assertEquals('', MigrationGenerator::parseFieldsToMigrationKey());
     }
 
-    public function testFieldConcatenation() {
+    public function testFieldConcatenation()
+    {
         $testCases = array(
             array(
                 'expected' => '',
@@ -71,7 +76,8 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase {
         }
     }
 
-    public function testArgumentPreparation() {
+    public function testArgumentPreparation()
+    {
         $testCases = array(
             array(
                 'expected' => array(
@@ -104,14 +110,16 @@ class MigrationGeneratorTest extends PHPUnit_Framework_TestCase {
     /**
      * @expectedException Orangehill\Photon\MigrationException
      */
-    public function testArgumentPreparationWithInvalidTableName() {
+    public function testArgumentPreparationWithInvalidTableName()
+    {
         MigrationGenerator::prepareArguments(5, 'table');
     }
 
     /**
      * @expectedException Orangehill\Photon\MigrationException
      */
-    public function testArgumentPreparationWithInvalidCommandName() {
+    public function testArgumentPreparationWithInvalidCommandName()
+    {
         MigrationGenerator::prepareArguments('create', array());
     }
 

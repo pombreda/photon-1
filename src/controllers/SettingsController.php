@@ -1,7 +1,7 @@
 <?php
 
 namespace Orangehill\Photon;
-
+use Orangehill\Photon\Library\Creator\MigrationGenerator;
 class SettingsController extends \BaseController {
 
     /**

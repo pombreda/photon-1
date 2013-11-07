@@ -10,7 +10,8 @@ namespace Orangehill\Photon\Library\Support;
 
 use Illuminate\Support\MessageBag;
 
-class ApiResponse {
+class ApiResponse
+{
 
     /** @var boolean */
     protected $success = true;
@@ -21,64 +22,101 @@ class ApiResponse {
     /** @var mixed Response content */
     protected $content;
 
-    /** @var MessageBag */
-    protected $messages;
+    /** @var array Custom fields */
+    protected $customFields = array();
 
-    public function __construct(MessageBag $messageBag) {
-        $this->messages = $messageBag;
+    /** @var MessageBag */
+    protected $messageBag;
+
+    public function __construct(MessageBag $messageBag)
+    {
+        $this->messageBag = $messageBag;
     }
 
-    public function getSuccess() {
+    public function getSuccess()
+    {
         return $this->success;
     }
 
-    public function setSuccess($success) {
+    public function setSuccess($success)
+    {
         $this->success = (bool) $success;
         return $this;
     }
 
-    public function getStatusCode() {
+    public function getStatusCode()
+    {
         return $this->statusCode;
     }
 
-    public function setStatusCode($status) {
+    public function setStatusCode($status)
+    {
         $this->statusCode = (int) $status;
         return $this;
     }
 
-    public function getContent() {
+    public function getContent()
+    {
         return $this->content;
     }
 
-    public function setContent($data) {
+    public function setContent($data)
+    {
         $this->content = $data;
         return $this;
     }
 
-    public function setMessages(MessageBag $messages) {
-        $this->messages = $messages;
+    public function setMessageBag(MessageBag $messages = null)
+    {
+        $this->messageBag = $messages;
         return $this;
     }
 
-    public function getMessages() {
-        return $this->messages->getMessages();
+    public function getMessages()
+    {
+        return $this->messageBag->getMessages();
     }
 
-    public function addMessage($key, $message) {
-        $this->messages->add($key, $message);
+    public function addMessage($key, $message)
+    {
+        $this->messageBag->add($key, $message);
         return $this;
     }
 
-    public function toArray() {
+    public function getCustomFields()
+    {
+        return $this->customFields;
+    }
+
+    public function setCustomFields(array $customFields)
+    {
+        $this->customFields = $customFields;
+        return $this;
+    }
+
+    public function setField($key, $value)
+    {
+        $this->customFields[$key] = $value;
+        return $this;
+    }
+
+    public function getField($key)
+    {
+        return $this->customFields[$key];
+    }
+
+    public function toArray()
+    {
         return array(
             'success'     => $this->getSuccess(),
             'status_code' => $this->getStatusCode(),
             'content'     => $this->getContent(),
             'messages'    => $this->getMessages()
-        );
+            ) + $this->getCustomFields();
     }
 
-    public function toJsonResponse() {
+    public function toJsonResponse()
+    {
         return \Response::json($this->toArray(), $this->getStatusCode());
     }
 

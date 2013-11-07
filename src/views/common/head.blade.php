@@ -5,6 +5,8 @@
         <link rel="stylesheet/less" href="{{ Config::get('photon::photon.package_assets_uri') }}/css/photon.less?<?=time()?>" media="all" />
         <link rel="stylesheet/less" href="{{ Config::get('photon::photon.package_assets_uri') }}/css/photon-responsive.less?<?=time()?>" media="all" />
 
+        <link rel="stylesheet/less" href="{{ Config::get('photon::photon.package_assets_uri') }}/css/changes.css?<?=time()?>" media="all" />
+
 <!--    PRODUCTION CSS -->
         <!-- <link rel="stylesheet" href="{{ Config::get('photon::photon.package_assets_uri') }}/css/css_compiled/photon-min.css?v1.1" media="all" /> -->
         <!-- <link rel="stylesheet" href="{{ Config::get('photon::photon.package_assets_uri') }}/css/css_compiled/photon-min-blessed1.css?v1.1" media="all" /> -->

@@ -14,8 +14,8 @@ Settings
 <div class="container-fluid admin-settings" id="module-settings">
     <div class="form-legend">General Module Settings</div>
     <!--Module ID from the module table-->
-    <input type="hidden" name="module[id]" id="module_id" value="{{$moduleId}}" />
-    <div class="control-group row-fluid">
+    <input type="hidden" @if($moduleId) name="module[id]" @endif id="module_id" value="{{$moduleId}}" />
+           <div class="control-group row-fluid">
         <div class="span2">
             <label class="control-label" for="name">
                 Module Name
@@ -35,7 +35,7 @@ Settings
         </div>
         <div class="span4">
             <div class="controls">
-                <input required id="table_name" type="text" name="module[table_name]" data-bound="<?= $module ? 0 : 1 ?>"  @if($module) disabled value="{{$module->table_name}}"@endif/>
+                <input required id="table_name" type="text" name="module[table_name]" data-bound="<?= $module ? 0 : 1 ?>"  @if($module) readonly value="{{$module->table_name}}"@endif/>
             </div>
         </div>
     </div>
@@ -48,7 +48,7 @@ Settings
         </div>
         <div class="span4">
             <div class="controls">
-                <select name="module[parent_module]" id="parent_module">
+                <select name="module[parent_module]" readonly id="parent_module">
                     <option value="">None</option>
                     @foreach($parentModules as $parentModule)
                     <option @if($module && $parentModule->id == $module->parent_module)selected=""@endif value="{{$parentModule->id}}">{{$parentModule->name}}</option>
@@ -59,7 +59,8 @@ Settings
         <div class="span2">
             <label class="control-label" for="nestable">
                 <input @if($module && $module->nestable==1)checked="checked"@endif type="checkbox" name="module[nestable]" id="nestable" class="uniformCheckbox" value="1"> Nestable
-                        <a href="javascript:;" class="bootstrap-tooltip" tabIndex="-1" data-placement="top" data-original-title="If nesting is allowed this module's items will be nestable under each other (e.g. to create a category tree)."><i class="icon-photon info-circle"></i></a>
+                        <input disabled id="nestable_hidden" type="hidden" name="module[nestable]" value="0"/>
+                <a href="javascript:;" class="bootstrap-tooltip" tabIndex="-1" data-placement="top" data-original-title="If nesting is allowed this module's items will be nestable under each other (e.g. to create a category tree)."><i class="icon-photon info-circle"></i></a>
             </label>
         </div>
         <div class="span4">
@@ -96,7 +97,7 @@ Settings
             </div>
             <div class="span2">
                 <div class="controls">
-                    <input type="text" class="module-field-input" data-input-name="name" name="--autogen" />
+                    <input required type="text" class="module-field-input" data-input-name="name" name="--autogen" />
                 </div>
             </div>
             <div class="span2">
@@ -122,7 +123,7 @@ Settings
             </div>
             <div class="span2">
                 <div class="controls">
-                    <select class="module-field-input" data-input-name="relation_table" name="--autogen" disabled>
+                    <select class="module-field-input" data-input-name="relation_table" name="--autogen" readonly>
                         <option value="">None</option>
                         @foreach($parentModules as $parentModule)
                         <option @if($module && $parentModule->id == $module->parent_module)selected=""@endif value="{{$parentModule->id}}">{{$parentModule->name}}</option>
@@ -177,16 +178,6 @@ Settings
 @stop
 
 @section('form-controls')
-<div class="container-fluid terminal" id="report">
-    <div class="form-legend">Pending Actions</div>
-    <div class="control-group row-fluid">
-        <div class="span12 span-inset reportContainer"></div>
-        <div class="span12 span-inset">
-            <button type="button" class="btn btn-primary" id="commit-module" data-loading-text="Commiting...">Commit</button>
-            <button type="button" class="btn" id="cancel-commit">Cancel</button>
-        </div>
-    </div>
-</div>
 <div class="container-fluid" id="form-controls">
     <!-- Form Controls begin -->
     <div class="control-group form-control row-fluid">
@@ -202,7 +193,9 @@ Settings
                 @endif
                 <!--<button type="button" class="btn btn-primary" id="validate_form">Validate</button>-->
                 <button type="button" class="btn btn-primary" id="validate_form">Save Module Settings</button>
+                @if($moduleId)
                 <button type="button" class="btn btn-danger form-control-reset">Remove Module</button>
+                @endif
                 <span class="confirm-reset-wrapper">
                     <span class="sure">Are you sure?</span>
                     <button type="button" class="btn btn-danger" id="remove_module">Yes</button>
@@ -224,7 +217,7 @@ Settings
 <script type="text/javascript" src="{{ Config::get('photon::photon.package_assets_uri') }}/js/admin-settings.js"></script>
 <script type="text/javascript" src="{{ Config::get('photon::photon.package_assets_uri') }}/js/string-extension.js"></script>
 <script>
-            $().ready(function(){
+            $(document).ready(function(){
 
     // Initialise checkboxes
     $(".uniformCheckbox").uniform();
@@ -242,90 +235,90 @@ Settings
             // the parameter is the node being loaded
             // (may be -1, 0, or undefined when loading the root nodes)
             "data" : function (n) {
-    // the result is fed to the AJAX request `data` option
-    return {
-    "id" : n.attr ? n.attr("id").replace(n.attr("data-module-name") + "_", "") : null
-    };
-    }
+            // the result is fed to the AJAX request `data` option
+            return {
+            "id" : n.attr ? n.attr("id").replace(n.attr("data-module-name") + "_", "") : null
+            };
+            }
     }
 
     },
             "plugins" : [
-            "themes",
-            "json_data",
-            "ui",
-            "themes",
-            "dnd",
-            "crrm",
-            "types"
-    ],
+                    "themes",
+                    "json_data",
+                    "ui",
+                    "themes",
+                    "dnd",
+                    "crrm",
+                    "types"
+            ],
             "ui" : {
-    "initially_select" : selectedNode
-    },
+            "initially_select" : selectedNode
+            },
             "core" : {
-    @if (isset($moduleId) AND is_numeric($moduleId))"initially_open" : ["module_{{$moduleId}}"]@endif
-    },
+            @if (isset($moduleId) AND is_numeric($moduleId))"initially_open" : ["module_{{$moduleId}}"]@endif
+            },
             "themes" : {
-    "theme" : "photonui",
-            "url" : "{{ Config::get('photon::photon.package_assets_uri') }}/js/plugins/jstree/themes/photonui/style.css"
-    },
+            "theme" : "photonui",
+                    "url" : "{{ Config::get('photon::photon.package_assets_uri') }}/js/plugins/jstree/themes/photonui/style.css"
+            },
             "crrm" : {
-    "move" : {
-    "default_position" : "first",
-            "check_move" : function (m) {
-    // m.np new parent
-    // m.o the node being moved
-    // $(m.np[0]).attr('rel') holds the node type name
-    // field nodes can be moved only inside it's parents
-    if ($(m.o[0]).attr('data-module-name') == 'field') {
-    return ($(m.o[0]).attr('data-parent-id') == $(m.np[0]).attr('id')) ? true : false;
-    }
-    // module nodes can be moved only inside root
-    if ($(m.o[0]).attr('data-module-name') == 'module') {
-    return ($(m.np[0]).attr('id') == 'jstree') ? true : false;
-    }
-    return false;
-    }
-    }
-    },
+            "move" : {
+            "default_position" : "first",
+                    "check_move" : function (m) {
+                    // m.np new parent
+                    // m.o the node being moved
+                    // $(m.np[0]).attr('rel') holds the node type name
+                    // field nodes can be moved only inside it's parents
+                    if ($(m.o[0]).attr('data-module-name') == 'field') {
+                    return ($(m.o[0]).attr('data-parent-id') == $(m.np[0]).attr('id')) ? true : false;
+                    }
+                    // module nodes can be moved only inside root
+                    if ($(m.o[0]).attr('data-module-name') == 'module') {
+                    return ($(m.np[0]).attr('id') == 'jstree') ? true : false;
+                    }
+                    return false;
+                    }
+            }
+            },
             "types" : {
-    "types" : {
-    "default" : {
-    "select_node": function(item){
-    window.location = $(item).find('a').attr('href');
-            return true;
-    }
-    },
-            "file" : {
-    "select_node": function(){
-    return false;
-    }
-    }
-    }
-    }
+            "types" : {
+            "default" : {
+            "select_node": function(item){
+            window.location = $(item).find('a').attr('href');
+                    return true;
+            }
+            },
+                    "file" : {
+                    "select_node": function(){
+                    return false;
+                    }
+                    }
+            }
+            }
     })
 
             .bind("move_node.jstree", function (e, data) {
-    var node_name = $(data.rslt.o[0]).attr('data-module-name');
-            var id = $(data.rslt.o[0]).attr('id').replace(node_name + '_', '');
-            var parent_node_name = $(data.rslt.o[0].parentNode.parentNode).attr('data-module-name');
-            var parent_node_id = $(data.rslt.o[0].parentNode.parentNode).attr('id').replace(parent_node_name + '_', '');
-            var next_sibling = $(data.rslt.o[0].nextSibling).attr('id');
-            var previous_sibling = $(data.rslt.o[0].previousSibling).attr('id');
-            $.ajax({
-    async : false,
-            type: 'POST',
-            url : '{{ \Request::root() }}/admin/jstree-settings',
-            data : {
-    "id" : id,
-            "node_name" : node_name,
-            "parent_node_id" : parent_node_id,
-            "parent_node_name" : parent_node_name,
-            "next_sibling" : next_sibling ? next_sibling.replace(node_name + '_', '') : '',
-            "previous_sibling" : previous_sibling ? previous_sibling.replace(node_name + '_', '') : ''
-    }
-    });
-    });
+            var node_name = $(data.rslt.o[0]).attr('data-module-name');
+                    var id = $(data.rslt.o[0]).attr('id').replace(node_name + '_', '');
+                    var parent_node_name = $(data.rslt.o[0].parentNode.parentNode).attr('data-module-name');
+                    var parent_node_id = $(data.rslt.o[0].parentNode.parentNode).attr('id').replace(parent_node_name + '_', '');
+                    var next_sibling = $(data.rslt.o[0].nextSibling).attr('id');
+                    var previous_sibling = $(data.rslt.o[0].previousSibling).attr('id');
+                    $.ajax({
+                    async : false,
+                            type: 'POST',
+                            url : '{{ \Request::root() }}/admin/jstree-settings',
+                            data : {
+                            "id" : id,
+                                    "node_name" : node_name,
+                                    "parent_node_id" : parent_node_id,
+                                    "parent_node_name" : parent_node_name,
+                                    "next_sibling" : next_sibling ? next_sibling.replace(node_name + '_', '') : '',
+                                    "previous_sibling" : previous_sibling ? previous_sibling.replace(node_name + '_', '') : ''
+                            }
+                    });
+            });
     });
 </script>
 @stop

@@ -11,6 +11,7 @@
                 <span class="nav-selection">Dashboard</span>
             </a>
         </li>
+        @if(is_array($mainMenu))
         @foreach($mainMenu as $item)
         <li>
             <a href="javascript:/" >
@@ -30,6 +31,7 @@
             @endif
         </li>
         @endforeach
+        @endif
         <li class="nav-logout">
             <a href="{{\Request::root()}}/users/logout">
                 <i class="icon-photon key_stroke"></i><span class="nav-selection">Logout</span>

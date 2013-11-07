@@ -19,6 +19,18 @@
                 @yield('content')
                 @yield('form-controls')
             </form>
+            <div class="container-fluid terminal" id="report">
+                <div class="form-legend">Pending Actions</div>
+                <div class="control-group row-fluid">
+                    <div class="span12 span-inset reportContainer report-container">
+                        <span class="report-entry-template">Hello world</span>
+                    </div>
+                    <div class="span12 span-inset">
+                        <button type="button" class="btn btn-primary" id="commit-module" data-loading-text="Commiting...">Commit</button>
+                        <button type="button" class="btn" id="cancel-commit">Cancel</button>
+                    </div>
+                </div>
+            </div>
         </div>
         @include('photon::common.javascript')
         @include('photon::notifications')
