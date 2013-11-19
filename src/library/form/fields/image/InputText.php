@@ -6,15 +6,15 @@
  * @author Ivan Batić <ivan.batic@live.com>
  */
 
-namespace Orangehill\Photon\Library\Form\Fields\Text;
+namespace Orangehill\Photon\Library\Form\Fields\InputText;
 
 use Orangehill\Photon\Library\Form\Core\Field;
 
-class Text extends Field {
-    
-    public function getHtmlValue() {
+class InputText extends Field
+{
+
+    public function getHtmlValue()
+    {
         return htmlentities($this->value);
     }
-
-
 }

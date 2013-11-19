@@ -18,7 +18,6 @@ function AdminSettings() {
     // Settings form
     var $creatorForm = $('#admin_settings_form');
 
-
     /**
      * Send a network request
      * @param string action
@@ -44,16 +43,17 @@ function AdminSettings() {
         if (['delete', 'update'].indexOf(action) >= 0 && !moduleId) {
             throw 'Trying to ' + action + ' with no module id specified';
         }
+
         if (!$('#nestable').is(':checked')) {
             $('#nestable_hidden').prop('disabled', false);
         }
         // Make the call
         $.ajax({
-            url: baseApiUrl + action,
-            type: method,
-            data: $form.serialize(),
+            url     : baseApiUrl + action,
+            type    : method,
+            data    : $form.serialize(),
             dataType: 'json',
-            success: function(response) {
+            success : function(response) {
                 if (typeof successCallback === 'function') {
                     successCallback(response);
                 }
@@ -75,14 +75,14 @@ function AdminSettings() {
     function addField(data) {
         // Field data can also be an event
         var fieldData = $.extend({
-            id: !data ? fieldCounter++ : null,
-            name: '',
-            type: 'string',
+            id            : !data ? fieldCounter++ : null,
+            name          : '',
+            type          : 'string',
             relation_table: '',
-            column_name: null,
-            column_type: null,
-            tooltip_text: '',
-            locked: !data ? false : true
+            column_name   : null,
+            column_type   : null,
+            tooltip_text  : '',
+            locked        : !data ? false : true
         }, data || {});
 
         // Store used selectors
@@ -98,8 +98,8 @@ function AdminSettings() {
         $newFieldInputs.each(function(index, element) {
             var name = $(element).attr('data-input-name');
             $(element).attr('name', 'module[fields][' + newFieldInsertion + fieldData.id + '][' + name + ']')
-                    .val(fieldData[name])
-                    .attr('data-bound', fieldData[name] ? 0 : 1);
+                .val(fieldData[name])
+                .attr('data-bound', fieldData[name] ? 0 : 1);
         }).filter("select").select2();
 
         if (!data) {
@@ -107,7 +107,7 @@ function AdminSettings() {
         }
 
         $newFieldInputs.filter('[data-input-name=column_name], [data-input-name=relation_table], [data-input-name=column_type]'
-                ).prop('disabled', fieldData.locked).filter('select').select2();
+        ).prop('disabled', fieldData.locked).filter('select').select2();
 
         $newField.attr({
             'data-field-id': fieldData.id
@@ -156,7 +156,8 @@ function AdminSettings() {
 
         // Mirror field name to column name
         $moduleFields.on('change keyup', '.module-field-input[data-input-name=name]', function() {
-            mirrorToSnake($(this), $(this).parents('.module-field').find('.module-field-input[data-input-name=column_name]'));
+            mirrorToSnake($(this),
+                $(this).parents('.module-field').find('.module-field-input[data-input-name=column_name]'));
         });
 
         // Bind field type changes
@@ -189,8 +190,8 @@ function AdminSettings() {
                     });
                     $.pnotify({
                         title: 'Error',
-                        type: 'info',
-                        text: $msgList.html()
+                        type : 'info',
+                        text : $msgList.html()
                     });
                 } else {
                     var $changeblock = generateChangeBlock(response.changes);
@@ -202,8 +203,13 @@ function AdminSettings() {
 
         // Bind commit module
         $('#commit-module').click(function() {
+            var $btn = $(this);
+            var originalTitle = $btn.text();
+            $btn.text('Please Wait...').prop('disabled', true);
             self.postAction('module', function() {
                 window.location.reload();
+            }, function() {
+                $btn.prop('disabled', false).text(originalTitle);
             });
         });
 
@@ -224,16 +230,16 @@ function AdminSettings() {
             var $moduleField = $(this).parents('.module-field');
             var $columnType = $moduleField.find('[data-input-name=column_type]');
             var typeMap = {
-                'input-text': 'string',
-                'rich-text': 'text',
-                'image': 'string',
+                'input-text'  : 'string',
+                'rich-text'   : 'text',
+                'image'       : 'string',
                 'inline-image': 'string',
-                'boolean': 'smallInteger',
-                'calendar': 'timestamp',
+                'boolean'     : 'smallInteger',
+                'calendar'    : 'timestamp',
                 'onle-to-many': 'integer',
                 'many-to-many': 'disabled',
-                'weight': 'integer',
-                'hidden': 'string'
+                'weight'      : 'integer',
+                'hidden'      : 'string'
             }
             var value = typeMap[$(this).val()] || 'string';
             $columnType.val(value).prop('disabled', value === 'disabled').select2();
@@ -263,7 +269,9 @@ function AdminSettings() {
         var actionText = changeset.type + ' ' + changeset.item_type;
         var actionClass = 'label label-warning';
 
-        if (changeset.type == 'delete') actionClass = 'label label-important';
+        if (changeset.type == 'delete') {
+            actionClass = 'label label-important';
+        }
         else if (changeset.type == 'create') actionClass = 'label label-success';
 
         var $title = $('<span/>').text(actionText.toUpperCase() + ':').addClass(actionClass);

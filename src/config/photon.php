@@ -53,5 +53,7 @@ return array(
 	 * @type string
 	 */
 	'package_assets_uri' => Request::root() . '/packages/orangehill/photon',
+    'media_folder' => 'media'
+
 
 );

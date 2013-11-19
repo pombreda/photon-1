@@ -7,6 +7,7 @@ class JsTreeController extends \BaseController
 
     /**
      * $modelInstance holds the current module model instance
+     *
      * @var \Baum\Node
      */
     protected $modelInstance;
@@ -19,17 +20,20 @@ class JsTreeController extends \BaseController
     public function getIndex()
     {
 
-        $id = \Input::get('id') ? : null;
-        $name = \Input::get('column_name') ? : null;
-        $nameSecond = \Input::has('column_name_second') ? \Input::get('column_name_second') : null;
-        $nameThird = \Input::has('column_name_third') ? \Input::get('column_name_third') : null;
-        $tableName = \Input::get('table_name') ? : null;
+        $id         = \Input::get('id') ? : null;
+        $name       = \Input::get('column_name') ? explode(',', \Input::get('column_name')) : null;
+        $tableName  = \Input::get('table_name') ? : null;
         $moduleName = \Input::get('name') ? : null;
+
 
         $output = array();
 
         // Instantiate model
-        $model = '\\Orangehill\\Photon\\' . studly_case($tableName);
+        $modelName = studly_case(str_singular($tableName));
+        $model     = '\\Orangehill\\Photon\\' . $modelName;
+        if (!class_exists($model)) {
+            $model = '\\' . $modelName;
+        }
         $this->modelInstance = new $model;
 
         if (is_null($id)) {
@@ -50,36 +54,35 @@ class JsTreeController extends \BaseController
             $node = array();
 
             // Check if entry name is from one to many relation
-            $entry->$name = $this->checkOneToManyRelation($name, $entry);
+            //            $entry->$name = $this->checkOneToManyRelation($name, $entry);
 
-            // Check if entry nameSecond is from one to many relation
-            if (!is_null($nameSecond)) {
-
-                $entry->$name .= ' ' . $this->checkOneToManyRelation($nameSecond, $entry);
+            if ($name === null) {
+                $entryName = (string) $entry;
+            } else {
+                $entryNameElements = array();
+                array_walk($name, function ($value) use (&$entry, &$entryNameElements) {
+                        $entryNameElements[] = $entry->$value;
+                    }
+                );
+                $entryName = join(' ', $entryNameElements);
             }
-
-            // Check if entry nameThird is from one to many relation
-            if (!is_null($nameThird)) {
-
-                $entry->$name .= ' ' . $this->checkOneToManyRelation($nameThird, $entry);
-            }
-
             $node['data'] = array(
-                'title' => $entry->$name,
+                'title' => $entryName,
                 'attr'  => array(
                     'href' => '/admin/' . $moduleName . '/' . $entry->id
                 )
             );
-
             $node['attr'] = array(
                 'data-module-name' => $moduleName,
                 'id'               => $moduleName . '_' . $entry->id
             );
 
-            if (count($entry->children()->get()))
+            if (count($entry->children()->get())) {
                 $node['state'] = 'closed';
+            }
 
             $output[] = $node;
+
         }
 
         return \Response::json($output);
@@ -87,15 +90,17 @@ class JsTreeController extends \BaseController
 
     /**
      * Checks if given custom name is from one to many relation
+     *
      * @param  string $name
      * @param  object $entry
+     *
      * @return string
      */
     public function checkOneToManyRelation($name, $entry)
     {
-
         if (strpos($name, '.')) {
             $params = explode('.', $name);
+
             return \DB::table($params[0])->find($entry->$params[1])->$params[2];
         }
 
@@ -112,8 +117,8 @@ class JsTreeController extends \BaseController
 
         $rules = array();
 
-        $rules['id'] = 'required|numeric';
-        $rules['node_name'] = 'required';
+        $rules['id']             = 'required|numeric';
+        $rules['node_name']      = 'required';
         $rules['parent_node_id'] = 'required_without:next_sibling,previous_sibling';
 
         $validator = \Validator::make(\Input::all(), $rules);
@@ -121,6 +126,7 @@ class JsTreeController extends \BaseController
         // If validation fails return first message
         if ($validator->fails()) {
             $messages = $validator->messages();
+
             return \Response::json($messages->first());
         }
 

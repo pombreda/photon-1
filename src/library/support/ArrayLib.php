@@ -13,13 +13,14 @@ class ArrayLib
 
     /**
      * Similar to array_walk_recursive, but tracks the path of each element
-     * 
-     * @param array $array Input array
+     *
+     * @param array    $array    Input array
      * @param callable $callback Function to excecute on each element of array, gets arguments ($key, $value, $path)
-     * @param array $path Array of tracked indexes
+     * @param array    $path     Array of tracked indexes
+     *
      * @throws \InvalidArgumentException
      * @author Ivan Batić
-     * @todo Write tests
+     * @todo   Write tests
      */
     public static function trackRecursive(array $array, $callback, array $path = array())
     {
@@ -39,33 +40,39 @@ class ArrayLib
     /**
      * Extracts a column from a multidimensional array, optionally indexed by $index
      * Recreation of array_column function from php 5.5
-     * 
-     * @param array $array Input array
+     *
+     * @param array  $array  Input array
      * @param string $column Column to extract
-     * @param string $index Optional name of the column to index by
+     * @param string $index  Optional name of the column to index by
+     *
      * @return array Extracted columns
      * @author Ivan Batić
-     * @todo Write tests
+     * @todo   Write tests
      */
     public static function column(array $array, $column, $index = null)
     {
         $values = array();
-        $keys = array();
+        $keys   = array();
         foreach ($array as $key => $entry) {
-            if (!is_array($entry)) continue;
-            $keys[] = $entry[$column] ? : null;
+            if (!is_array($entry)) {
+                continue;
+            }
+            $keys[]   = $entry[$column] ? : null;
             $values[] = $entry[$index] ? : null;
         }
+
         return $index ? array_combine($keys, $values) : $values;
     }
 
     /**
      * Repack a multidimensional array by specified column as a key
-     * @param array $array Input array
+     *
+     * @param array  $array  Input array
      * @param string $column Column to index by
+     *
      * @return array Repacked array
      * @author Ivan Batić
-     * @todo Write tests
+     * @todo   Write tests
      */
     public static function index(array $array, $column = 'id')
     {
@@ -73,38 +80,50 @@ class ArrayLib
         foreach ($array as $key => $value) {
             $output[$value[$column]] = $value;
         }
+
         return $output;
     }
 
     /**
      * Get the value of a multidimensional array at index specified by path
+     *
      * @param array $array Input array
-     * @param array $path Ordered array of keys
+     * @param array $path  Ordered array of keys
+     *
      * @return mixed Value at the specified path
      * @author Ivan Batić
-     * @todo Write tests
+     * @todo   Write tests
      */
     public static function path(array $array, array $path = array())
     {
         $result = $array;
-        foreach ($path as $level) $result = isset($result[$level]) ? $result[$level] : null;
+        foreach ($path as $level) {
+            $result = isset($result[$level]) ? $result[$level] : null;
+        }
+
         return $result;
     }
 
     /**
      * Checks to see if multidimensional array is empty
+     *
      * @param array $array Input array
+     *
      * @return boolean
      */
     public static function isDeepEmpty(array $array)
     {
-        if (empty($array)) return true;
+        if (empty($array)) {
+            return true;
+        }
         $empty = true;
-        array_walk_recursive($array, function($value) use (&$empty) {
-            if (!is_array($value)) {
-                $empty = false;
+        array_walk_recursive($array, function ($value) use (&$empty) {
+                if (!is_array($value)) {
+                    $empty = false;
+                }
             }
-        });
+        );
+
         return $empty;
     }
 
@@ -117,6 +136,8 @@ class ArrayLib
                 }
             }
         }
+
+        return null;
     }
 
     public static function getKey(array $array = array(), $key)

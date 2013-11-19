@@ -5,10 +5,10 @@
                 <i class="icon-photon home"></i>
             </a>
         </li>
-        <li class="current">
-            @foreach($breadcrumbs as $breadcrumb)
-            <a href="{{$breadcrumb['url']}}">{{$breadcrumb['anchor']}}</a>
-            @endforeach
-        </li>
+        <?php foreach ($breadcrumbs as $breadcrumb): ?>
+            <li class="<?= last($breadcrumbs) == $breadcrumb ? 'current' : '' ?>">
+                <a href="<?= $breadcrumb['url'] ?>"><?= $breadcrumb['title'] ?></a>
+            </li>
+        <?php endforeach; ?>
     </ul>
 </div>

@@ -12,9 +12,6 @@
             <?php endif; ?>
         </label>
     </div>
-    <?php
-    var_dump($field);
-    ?>
     <div class="span9">
         <div class="controls">
             <select
@@ -22,15 +19,11 @@
                 name="<?= $field->column_name ?>"
                 class="one-to-many">
                 <option>None</option>
-                <?php if (is_array($oneToMany[$field->column_name])): ?>
-                    <?php foreach ($oneToMany[$field->column_name] as $id => $anchor): ?>
-                        <option value="<?= $id ?>"
-                            <?= $entry[$field->column_name] == $id ? 'selected' : '' ?>
-                            >
-                            <?= $anchor ?>
-                        </option>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                <?php foreach ($field->getOptions() as $index => $model): ?>
+                    <option value="<?= $model->id ?>" <?= $model->id == $field->getValue() ? 'selected' : '' ?>>
+                        <?= $model ?>
+                    </option>
+                <?php endforeach; ?>
             </select>
         </div>
     </div>

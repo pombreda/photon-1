@@ -2,14 +2,16 @@
 
 namespace Orangehill\Photon;
 
-use \Baum\Node;
+use Baum\Node;
 
-class Field extends Node
+class
+Field extends Node
 {
-
-    protected $fillable = array('name', 'type', 'relation_table', 'column_name', 'column_type', 'tooltip_text', 'module_id');
+    protected $fillable = array(
+        'name', 'type', 'relation_table', 'column_name', 'column_type', 'tooltip_text', 'module_id'
+    );
     protected $rules = array(
-        'column_name' => 'unique:fields,column_name',
+        // 'column_name' => 'unique:fields,column_name',
         'column_type' => 'alpha',
         'module_id'   => 'integer|exists:modules,id'
     );
@@ -17,6 +19,7 @@ class Field extends Node
     public static function getTableName()
     {
         $instance = new Field();
+
         return $instance->getTable();
     }
 
