@@ -10,7 +10,7 @@ return array(
         array('input-text', 'string'),
         array('rich-text', 'text'),
         array('image', 'string'),
-        array('inline-image', 'string'),
+//        array('inline-image', 'string'),
         array('boolean', 'smallInteger'),
         array('calendar', 'timestamp'),
         array('one-to-many', 'integer'),

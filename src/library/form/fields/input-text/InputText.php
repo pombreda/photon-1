@@ -12,9 +12,4 @@ use Orangehill\Photon\Library\Form\Core\Field;
 
 class InputText extends Field
 {
-
-    public function getHtmlValue()
-    {
-        return htmlentities($this->value);
-    }
 }

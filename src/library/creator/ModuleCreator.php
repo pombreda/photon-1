@@ -173,10 +173,16 @@ class ModuleCreator
                 $modelName = ucfirst(camel_case(str_singular($tableName)));
                 \Artisan::call('generate:model', array('name' => $modelName));
                 $pathToModel = app_path('models') . '/' . $modelName . '.php';
-                file_put_contents(
-                    $pathToModel,
-                    str_replace('extends Eloquent', 'extends Baum\Node', file_get_contents($pathToModel))
-                );
+
+                $fileContent  = file_get_contents($pathToModel);
+                $replaced     = str_replace('extends Eloquent', 'extends Baum\Node', $fileContent);
+                $toStringStub = StubFactory::make('ModelToStringMethod', array(
+                        'field' => 'id'
+                    )
+                )->append("\n}")->get();
+                $replaced = substr_replace($replaced, $toStringStub, strrpos($replaced, '}'));
+
+                file_put_contents($pathToModel, $replaced);
 
                 $newModule->save();
                 $moduleId = $newModule->id;
@@ -205,7 +211,7 @@ class ModuleCreator
 
         // Delete fields
         $deletedFieldIds = array_fetch($changeGroups['deleted_fields'], 'item_id') + array(0);
-        $moduleFields = Field::whereIn('id', $deletedFieldIds)->get();
+        $moduleFields    = Field::whereIn('id', $deletedFieldIds)->get();
         foreach ($moduleFields as $moduleField) {
             FieldFactory::make($moduleField)->uninstall();
         }

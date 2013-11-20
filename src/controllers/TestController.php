@@ -7,12 +7,14 @@
  */
 
 namespace Orangehill\Photon;
-use Orangehill\Photon\Module;
-class TestController extends \BaseController {
 
-    public function index() {
-        $mod = Module::with('Fields')->find(1)->toArray();
-        var_dump($mod);
+class TestController extends \BaseController
+{
+
+    public function index()
+    {
+        $heroes = \DB::connection()->select('show columns from high_mountains');
+        var_dump($heroes);
         die();
     }
 

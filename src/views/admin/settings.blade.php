@@ -33,15 +33,24 @@ Settings
         <div class="span2">
             <label class="control-label" for="table_name">
                 Table Name
-                <a href="javascript:;" class="bootstrap-tooltip" tabIndex="-1" data-placement="top"
-                   data-original-title="Auto-generated MYSQL table name that can be changed by typing in a new value."><i
-                        class="icon-photon info-circle"></i></a>
+                <a href="javascript:;"
+                   class="bootstrap-tooltip"
+                   tabIndex="-1"
+                   data-placement="top"
+                   data-original-title="Auto-generated MYSQL table name that can be changed by typing in a new value.">
+                    <i class="icon-photon info-circle"></i>
+                </a>
             </label>
         </div>
         <div class="span4">
             <div class="controls">
-                <input required id="table_name" type="text" name="module[table_name]"
-                       data-bound="<?= $module ? 0 : 1 ?>" @if($module) readonly value="{{$module->table_name}}"@endif/>
+                <input required
+                       id="table_name"
+                       type="text"
+                       name="module[table_name]"
+                       data-bound="<?= $module ? 0 : 1 ?>"
+                    <?= $module ? "readonly value='{$module->table_name}'" : '' ?>
+                    />
             </div>
         </div>
     </div>
@@ -49,46 +58,57 @@ Settings
         <div class="span2">
             <label class="control-label" for="parent_module">
                 Parent Module
-                <a href="javascript:;" class="bootstrap-tooltip" tabIndex="-1" data-placement="top"
-                   data-original-title="If selected, current module will be nest-able under selected parent module's items."><i
-                        class="icon-photon info-circle"></i></a>
+                <a href="javascript:;"
+                   class="bootstrap-tooltip"
+                   tabIndex="-1"
+                   data-placement="top"
+                   data-original-title="If selected, current module will be nestable under selected parent module's items.">
+                    <i class="icon-photon info-circle"></i>
+                </a>
             </label>
         </div>
         <div class="span4">
             <div class="controls">
                 <select name="module[parent_module]" readonly id="parent_module">
                     <option value="">None</option>
-                    @foreach($parentModules as $parentModule)
-                    <option
-                    @if($module && $parentModule->id == $module->parent_module)selected=""@endif
-                    value="{{$parentModule->id}}">{{$parentModule->name}}</option>
-                    @endforeach
+                    <?php foreach ($parentModules as $parentModule): ?>
+                        <option></option>
+                    <?php endforeach; ?>
                 </select>
             </div>
         </div>
         <div class="span2">
             <label class="control-label" for="nestable">
-                <input checked="<?= $module->nestable ? 'checked' : '' ?>" type="checkbox"
-                       name="module[nestable]" id="nestable" class="uniformCheckbox" value="1"> Nestable
-                <input disabled id="nestable_hidden" type="hidden" name="module[nestable]" value="0"/>
+                <input
+                    type="checkbox"
+                    <?= $module->nestable ? 'checked' : '' ?>
+                    name="module[nestable]"
+                    id="nestable"
+                    class="uniformCheckbox"
+                    value="<?= $module->nestable ?>">
+                <input type="hidden" name="module[nestable]" value="<?= $module->nestable ?>"/>
+                Nestable
                 <a href="javascript:;"
                    class="bootstrap-tooltip"
                    tabIndex="-1"
                    data-placement="top"
-                   data-original-title="If nesting is allowed this module's items will be nestable under each other (e.g. to create a category tree).">
+                   data-original-title="If nesting is allowed this module's items will be
+                   nestable under each other (e.g. to create a category tree).">
                     <i class="icon-photon info-circle"></i>
                 </a>
             </label>
         </div>
         <div class="span4">
             <label class="control-label" for="is_folder">
-                <input checked="<?= $module->nestable ? 'checked' : '' ?>"
-                       type="checkbox"
-                       name="module[nestable]"
-                       id="nestable"
-                       class="uniformCheckbox"
-                       value="1"> Nestable
-                <input disabled id="is_folder_hidden" type="hidden" name="module[is_folder]" value="0"/>
+                <input
+                    type="checkbox"
+                    <?= $module->is_folder ? 'checked' : '' ?>
+                    name="module[is_folder]"
+                    id="is_folder"
+                    class="uniformCheckbox"
+                    value="<?= $module->is_folder ?>"/>
+                <input type="hidden" name="module[is_folder]" value="<?= $module->is_folder ?>"/>
+                In Menu?
                 <a href="javascript:;" class="bootstrap-tooltip" tabIndex="-1" data-placement="top"
                    data-original-title="Available in the main menu?"><i
                         class="icon-photon info-circle"></i></a>

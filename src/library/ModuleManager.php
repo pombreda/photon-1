@@ -31,7 +31,7 @@ class ModuleManager
 
         return $model->toArray();
     }
-netb
+
     protected function prepareFieldCollection(array $data = array())
     {
         $fieldCollection = new FieldCollection();

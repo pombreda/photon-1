@@ -8,14 +8,14 @@ class AdminController extends \Controller
 {
 
     /** @var ModuleManager */
-    protected $moduleManager;
+//    protected $moduleManager;
 
     /**
      * Constructor
      */
-    public function __construct(ModuleManager $manager)
+    public function __construct()
     {
-        $this->moduleManager = $manager;
+//        $this->moduleManager = $manager;
     }
 
     /**
