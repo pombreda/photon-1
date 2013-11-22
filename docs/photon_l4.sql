@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 20, 2013 at 04:58 PM
+-- Generation Time: Nov 22, 2013 at 10:20 PM
 -- Server version: 5.5.33
 -- PHP Version: 5.5.3
 
@@ -26,6 +26,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `fields`
 --
 
+DROP TABLE IF EXISTS `fields`;
 CREATE TABLE `fields` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -46,7 +47,7 @@ CREATE TABLE `fields` (
   KEY `fields_parent_id_index` (`parent_id`),
   KEY `fields_lft_index` (`lft`),
   KEY `fields_rgt_index` (`rgt`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=181 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=184 ;
 
 --
 -- Dumping data for table `fields`
@@ -72,7 +73,29 @@ INSERT INTO `fields` (`id`, `name`, `type`, `relation_table`, `column_name`, `co
 (177, 'Name', 'input-text', '', 'name', 'string', 'My Name', 53, NULL, 219, 220, 0, '2013-11-20 14:03:10', '2013-11-20 14:03:10'),
 (178, 'Avatar', 'image', NULL, 'avatar', 'string', '', 53, NULL, 223, 224, 0, '2013-11-20 14:05:39', '2013-11-20 14:38:21'),
 (179, 'Hero Id', 'one-to-many', 'superheroes', 'hero_id', 'integer', '', 53, NULL, 221, 222, 0, '2013-11-20 14:05:39', '2013-11-20 14:38:21'),
-(180, 'Saviors', 'many-to-many', 'superheroes', 'saviors', '', '', 53, NULL, 225, 226, 0, '2013-11-20 14:28:35', '2013-11-20 14:28:35');
+(180, 'Saviors', 'many-to-many', 'superheroes', 'saviors', '', '', 53, NULL, 225, 226, 0, '2013-11-20 14:28:35', '2013-11-20 14:28:35'),
+(181, 'tester_name', 'input-text', '', 'tester_name', 'string', '', 54, NULL, 227, 228, 0, '2013-11-21 10:58:40', '2013-11-21 10:58:40'),
+(182, 'Double Name', 'input-text', '', 'double_name', 'string', '', 55, NULL, 229, 230, 0, '2013-11-21 11:12:19', '2013-11-21 11:12:19'),
+(183, 'Name', 'input-text', '', 'name', 'string', '', 56, NULL, 231, 232, 0, '2013-11-22 13:41:27', '2013-11-22 13:41:27');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `field_tester`
+--
+
+DROP TABLE IF EXISTS `field_tester`;
+CREATE TABLE `field_tester` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `lft` int(11) NOT NULL,
+  `rgt` int(11) NOT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `depth` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `tester_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -80,6 +103,7 @@ INSERT INTO `fields` (`id`, `name`, `type`, `relation_table`, `column_name`, `co
 -- Table structure for table `field_validation_rules`
 --
 
+DROP TABLE IF EXISTS `field_validation_rules`;
 CREATE TABLE `field_validation_rules` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -90,9 +114,38 @@ CREATE TABLE `field_validation_rules` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `folders`
+--
+
+DROP TABLE IF EXISTS `folders`;
+CREATE TABLE `folders` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `lft` int(11) NOT NULL,
+  `rgt` int(11) NOT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `depth` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `folders`
+--
+
+INSERT INTO `folders` (`id`, `lft`, `rgt`, `parent_id`, `depth`, `created_at`, `updated_at`, `name`) VALUES
+(1, 1, 2, NULL, 0, '2013-11-22 13:42:34', '2013-11-22 13:42:41', 'Advanced Concepts'),
+(2, 3, 4, NULL, 0, '2013-11-22 13:42:53', '2013-11-22 13:42:53', 'Custom Models'),
+(3, 5, 6, NULL, 0, '2013-11-22 13:42:53', '2013-11-22 13:42:53', 'Empty Folder');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `high_mountains`
 --
 
+DROP TABLE IF EXISTS `high_mountains`;
 CREATE TABLE `high_mountains` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `lft` int(11) NOT NULL,
@@ -120,6 +173,7 @@ INSERT INTO `high_mountains` (`id`, `lft`, `rgt`, `parent_id`, `depth`, `created
 -- Table structure for table `migrations`
 --
 
+DROP TABLE IF EXISTS `migrations`;
 CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL
@@ -161,7 +215,13 @@ INSERT INTO `migrations` (`migration`, `batch`) VALUES
 ('2013_11_20_150310_add_name_to_spaces_table', 22),
 ('2013_11_20_150539_add_avatar_and_hero_id_to_spaces_table', 23),
 ('2013_11_20_152835_add_to_spaces_table', 24),
-('2013_11_20_152835_pivot_space_superhero_table', 24);
+('2013_11_20_152835_pivot_space_superhero_table', 24),
+('2013_11_21_115839_create_field_tester_table', 25),
+('2013_11_21_115840_add_tester_name_to_field_tester_table', 25),
+('2013_11_21_121217_create_second_field_testers_table', 26),
+('2013_11_21_121218_add_double_name_to_second_field_testers_table', 26),
+('2013_11_22_144126_create_folders_table', 27),
+('2013_11_22_144127_add_name_to_folders_table', 27);
 
 -- --------------------------------------------------------
 
@@ -169,11 +229,12 @@ INSERT INTO `migrations` (`migration`, `batch`) VALUES
 -- Table structure for table `modules`
 --
 
+DROP TABLE IF EXISTS `modules`;
 CREATE TABLE `modules` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `table_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `parent_module` int(10) unsigned DEFAULT NULL,
+  `folder_id` int(10) unsigned DEFAULT NULL,
   `nestable` tinyint(1) NOT NULL DEFAULT '0',
   `icon` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `parent_id` int(10) unsigned DEFAULT NULL,
@@ -186,23 +247,52 @@ CREATE TABLE `modules` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `table_name` (`table_name`),
   UNIQUE KEY `module_name` (`name`),
-  KEY `modules_parent_module_index` (`parent_module`),
+  KEY `modules_parent_module_index` (`folder_id`),
   KEY `modules_parent_id_index` (`parent_id`),
   KEY `modules_lft_index` (`lft`),
   KEY `modules_rgt_index` (`rgt`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=54 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=57 ;
 
 --
 -- Dumping data for table `modules`
 --
 
-INSERT INTO `modules` (`id`, `name`, `table_name`, `parent_module`, `nestable`, `icon`, `parent_id`, `lft`, `rgt`, `depth`, `created_at`, `updated_at`, `is_folder`) VALUES
-(1, 'Styles', 'styles', 15, 0, '', NULL, 1, 2, 0, '2013-08-05 09:10:24', '2013-09-20 08:50:32', 1),
-(46, 'Superheroes', 'superheroes', NULL, 1, '', NULL, 3, 4, 0, '2013-11-08 11:25:36', '2013-11-08 11:25:36', 1),
-(48, 'World Wonders', 'world_wonders', NULL, 1, '', NULL, 5, 6, 0, '2013-11-12 11:17:42', '2013-11-12 11:17:42', 1),
-(50, 'High Mountains', 'high_mountains', NULL, 1, '', NULL, 7, 8, 0, '2013-11-20 11:06:35', '2013-11-20 11:06:35', 1),
-(52, 'Superclouds', 'superclouds', NULL, 0, '', NULL, 9, 10, 0, '2013-11-20 13:24:30', '2013-11-20 13:24:30', 1),
-(53, 'Spaces', 'spaces', NULL, 0, '', NULL, 11, 12, 0, '2013-11-20 13:58:43', '2013-11-20 13:58:43', 1);
+INSERT INTO `modules` (`id`, `name`, `table_name`, `folder_id`, `nestable`, `icon`, `parent_id`, `lft`, `rgt`, `depth`, `created_at`, `updated_at`, `is_folder`) VALUES
+(1, 'Styles', 'styles', NULL, 0, '', NULL, 3, 4, 0, '2013-08-05 09:10:24', '2013-11-22 13:41:39', 1),
+(46, 'Superheroes', 'superheroes', 1, 1, '', NULL, 5, 6, 0, '2013-11-08 11:25:36', '2013-11-22 13:41:39', 1),
+(48, 'World Wonders', 'world_wonders', 1, 1, '', NULL, 7, 8, 0, '2013-11-12 11:17:42', '2013-11-22 13:41:39', 1),
+(50, 'High Mountains', 'high_mountains', NULL, 1, '', NULL, 9, 10, 0, '2013-11-20 11:06:35', '2013-11-22 13:41:39', 1),
+(52, 'Superclouds', 'superclouds', 1, 0, '', NULL, 11, 12, 0, '2013-11-20 13:24:30', '2013-11-22 13:41:39', 1),
+(53, 'Spaces', 'spaces', 2, 0, '', NULL, 13, 14, 0, '2013-11-20 13:58:43', '2013-11-22 13:41:39', 1),
+(54, 'Field Tester', 'field_tester', NULL, 0, '', NULL, 15, 16, 0, '2013-11-21 10:58:40', '2013-11-22 13:41:39', 0),
+(55, 'Second Field Testers', 'second_field_testers', 2, 0, '', NULL, 17, 18, 0, '2013-11-21 11:12:18', '2013-11-22 13:41:39', 1),
+(56, 'Folders', 'folders', 2, 1, '', NULL, 1, 2, 0, '2013-11-22 13:41:27', '2013-11-22 13:41:39', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `second_field_testers`
+--
+
+DROP TABLE IF EXISTS `second_field_testers`;
+CREATE TABLE `second_field_testers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `lft` int(11) NOT NULL,
+  `rgt` int(11) NOT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `depth` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `double_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+
+--
+-- Dumping data for table `second_field_testers`
+--
+
+INSERT INTO `second_field_testers` (`id`, `lft`, `rgt`, `parent_id`, `depth`, `created_at`, `updated_at`, `double_name`) VALUES
+(1, 1, 2, NULL, 0, '2013-11-21 11:12:51', '2013-11-21 11:12:51', 'Superman');
 
 -- --------------------------------------------------------
 
@@ -210,6 +300,7 @@ INSERT INTO `modules` (`id`, `name`, `table_name`, `parent_module`, `nestable`, 
 -- Table structure for table `spaces`
 --
 
+DROP TABLE IF EXISTS `spaces`;
 CREATE TABLE `spaces` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `lft` int(11) NOT NULL,
@@ -239,6 +330,7 @@ INSERT INTO `spaces` (`id`, `lft`, `rgt`, `parent_id`, `depth`, `created_at`, `u
 -- Table structure for table `space_superhero`
 --
 
+DROP TABLE IF EXISTS `space_superhero`;
 CREATE TABLE `space_superhero` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `space_id` int(10) unsigned NOT NULL,
@@ -246,14 +338,7 @@ CREATE TABLE `space_superhero` (
   PRIMARY KEY (`id`),
   KEY `space_superhero_space_id_index` (`space_id`),
   KEY `space_superhero_superhero_id_index` (`superhero_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
-
---
--- Dumping data for table `space_superhero`
---
-
-INSERT INTO `space_superhero` (`id`, `space_id`, `superhero_id`) VALUES
-(1, 3, 2);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -261,6 +346,7 @@ INSERT INTO `space_superhero` (`id`, `space_id`, `superhero_id`) VALUES
 -- Table structure for table `styles`
 --
 
+DROP TABLE IF EXISTS `styles`;
 CREATE TABLE `styles` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -305,6 +391,7 @@ INSERT INTO `styles` (`id`, `name`, `parent_id`, `lft`, `rgt`, `depth`, `created
 -- Table structure for table `superclouds`
 --
 
+DROP TABLE IF EXISTS `superclouds`;
 CREATE TABLE `superclouds` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `lft` int(11) NOT NULL,
@@ -332,6 +419,7 @@ INSERT INTO `superclouds` (`id`, `lft`, `rgt`, `parent_id`, `depth`, `created_at
 -- Table structure for table `superheroes`
 --
 
+DROP TABLE IF EXISTS `superheroes`;
 CREATE TABLE `superheroes` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `lft` int(11) NOT NULL,
@@ -344,15 +432,17 @@ CREATE TABLE `superheroes` (
   `last_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `mugshot` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=12 ;
 
 --
 -- Dumping data for table `superheroes`
 --
 
 INSERT INTO `superheroes` (`id`, `lft`, `rgt`, `parent_id`, `depth`, `created_at`, `updated_at`, `first_name`, `last_name`, `mugshot`) VALUES
-(2, 1, 2, NULL, 0, '2013-11-08 11:26:02', '2013-11-20 13:46:30', 'Jack', 'Peter', ''),
-(3, 3, 4, NULL, 0, '2013-11-08 14:06:04', '2013-11-20 13:46:30', 'Michael', 'Cage', '');
+(8, 13, 14, NULL, 0, '2013-11-21 10:02:50', '2013-11-22 13:23:51', 'Thomas', 'Edison', ''),
+(9, 15, 16, NULL, 0, '2013-11-21 10:03:26', '2013-11-21 10:03:26', 'Jack', 'Dawson', ''),
+(10, 17, 18, NULL, 0, '2013-11-21 10:05:34', '2013-11-21 10:05:34', 'Abraham', 'Lincoln', ''),
+(11, 19, 20, NULL, 0, '2013-11-21 10:06:08', '2013-11-21 10:06:08', 'Nick', 'Slaughter', '');
 
 -- --------------------------------------------------------
 
@@ -360,6 +450,7 @@ INSERT INTO `superheroes` (`id`, `lft`, `rgt`, `parent_id`, `depth`, `created_at
 -- Table structure for table `superhero_world_wonder`
 --
 
+DROP TABLE IF EXISTS `superhero_world_wonder`;
 CREATE TABLE `superhero_world_wonder` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `superhero_id` int(10) unsigned NOT NULL,
@@ -369,19 +460,13 @@ CREATE TABLE `superhero_world_wonder` (
   KEY `superhero_world_wonder_world_wonder_id_index` (`world_wonder_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 
---
--- Dumping data for table `superhero_world_wonder`
---
-
-INSERT INTO `superhero_world_wonder` (`id`, `superhero_id`, `world_wonder_id`) VALUES
-(2, 2, 5);
-
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `world_wonders`
 --
 
+DROP TABLE IF EXISTS `world_wonders`;
 CREATE TABLE `world_wonders` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `lft` int(11) NOT NULL,
@@ -419,8 +504,8 @@ ALTER TABLE `fields`
 -- Constraints for table `space_superhero`
 --
 ALTER TABLE `space_superhero`
-  ADD CONSTRAINT `space_superhero_superhero_id_foreign` FOREIGN KEY (`superhero_id`) REFERENCES `superheroes` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `space_superhero_space_id_foreign` FOREIGN KEY (`space_id`) REFERENCES `spaces` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `space_superhero_space_id_foreign` FOREIGN KEY (`space_id`) REFERENCES `spaces` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `space_superhero_superhero_id_foreign` FOREIGN KEY (`superhero_id`) REFERENCES `superheroes` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `superhero_world_wonder`
