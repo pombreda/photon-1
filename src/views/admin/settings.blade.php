@@ -57,7 +57,7 @@ Settings
     <div class="control-group row-fluid">
         <div class="span2">
             <label class="control-label" for="parent_module">
-                Parent Module
+                Folder
                 <a href="javascript:;"
                    class="bootstrap-tooltip"
                    tabIndex="-1"
@@ -69,10 +69,14 @@ Settings
         </div>
         <div class="span4">
             <div class="controls">
-                <select name="module[parent_module]" readonly id="parent_module">
+                <select name="module[folder_id]" id="folder_id">
                     <option value="">None</option>
-                    <?php foreach ($parentModules as $parentModule): ?>
-                        <option></option>
+                    <?php foreach ($folders as $folder): ?>
+                        <option value="<?= $folder->id ?>"
+                            <?= $module->folder_id == $folder->id ? 'selected' : '' ?>
+                            >
+                            <?= $folder->name ?>
+                        </option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -96,22 +100,6 @@ Settings
                    nestable under each other (e.g. to create a category tree).">
                     <i class="icon-photon info-circle"></i>
                 </a>
-            </label>
-        </div>
-        <div class="span4">
-            <label class="control-label" for="is_folder">
-                <input
-                    type="checkbox"
-                    <?= $module->is_folder ? 'checked' : '' ?>
-                    name="module[is_folder]"
-                    id="is_folder"
-                    class="uniformCheckbox"
-                    value="<?= $module->is_folder ?>"/>
-                <input type="hidden" name="module[is_folder]" value="<?= $module->is_folder ?>"/>
-                In Menu?
-                <a href="javascript:;" class="bootstrap-tooltip" tabIndex="-1" data-placement="top"
-                   data-original-title="Available in the main menu?"><i
-                        class="icon-photon info-circle"></i></a>
             </label>
         </div>
     </div>

@@ -11,7 +11,6 @@ Field extends Node
         'name', 'type', 'relation_table', 'column_name', 'column_type', 'tooltip_text', 'module_id'
     );
     protected $rules = array(
-        // 'column_name' => 'unique:fields,column_name',
         'column_type' => 'alpha',
         'module_id'   => 'integer|exists:modules,id'
     );

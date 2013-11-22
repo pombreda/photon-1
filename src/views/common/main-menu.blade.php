@@ -17,7 +17,39 @@
                 <span class="nav-selection">Creator</span>
             </a>
         </li>
-        <?php if (is_array($mainMenu)): ?>
+
+        <!--Start with folders-->
+        <?php foreach ($mainMenu as $entry): ?>
+            <li>
+                <a href="<?= \Request::root() ?>/admin/<?= $entry->table_name ?>">
+                    <i class="icon-photon
+                    <?php if ($entry instanceof \Orangehill\Photon\Folder): ?>
+                    <?= $entry->icon ? : 'box' ?>
+                    <?php else: ?>
+                    <?= $entry->icon ? : 'aperture' ?>
+                    <?php endif; ?>
+                    "></i>
+                    <span class="nav-selection"><?= $entry->name ?></span>
+                </a>
+                <?php if ($entry instanceof \Orangehill\Photon\Folder): ?>
+                    <div class="sub-nav">
+                        <ul class="nav">
+                            <?php foreach ($entry->modules as $module): ?>
+                                <li>
+                                    <a href="<?= \Request::root() ?>/admin/<?= $module->table_name ?>">
+                                        <?= $module->name ?>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
+            </li>
+        <?php endforeach; ?>
+        <!--End with folders-->
+
+
+        <?php if (0): ?>
             <?php foreach ($mainMenu as $item): ?>
                 <li>
                     <a href="<?= \Request::root() ?>/admin/<?= $item['table_name'] ?>">

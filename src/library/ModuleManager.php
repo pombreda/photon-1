@@ -3,6 +3,7 @@
 namespace Orangehill\Photon\Library;
 
 
+use Illuminate\Database\Eloquent\Model;
 use Orangehill\Photon\Library\Form\Core\FieldCollection;
 use Orangehill\Photon\Library\Form\Core\FieldFactory;
 use Orangehill\Photon\Module;
@@ -64,11 +65,14 @@ class ModuleManager
         $fieldCollection = $this->prepareFieldCollection($data);
         $updatables      = $this->prepareUpdatables($fieldCollection, $data);
 
+        /**
+         * @var $model Model
+         */
         $model = new $this->modelName($updatables);
         $model->save();
         $fieldCollection->setRow($model->toArray())->update();
 
-        return $model->toArray();
+        return call_user_func("{$this->modelName}::find", $model->id)->toArray();
     }
 
     public function deleteEntry($id)

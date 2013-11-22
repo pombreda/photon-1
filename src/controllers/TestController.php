@@ -8,13 +8,15 @@
 
 namespace Orangehill\Photon;
 
+use Illuminate\Validation\Validator;
+
 class TestController extends \BaseController
 {
 
     public function index()
     {
-        $heroes = \DB::connection()->select('show columns from high_mountains');
-        var_dump($heroes);
+        $var = \Folder::with('modules')->get();
+        var_dump($var);
         die();
     }
 

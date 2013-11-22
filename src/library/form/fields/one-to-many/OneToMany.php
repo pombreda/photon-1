@@ -8,6 +8,7 @@
 
 namespace Orangehill\Photon\Library\Form\Fields\OneToMany;
 
+use Illuminate\Support\MessageBag;
 use Orangehill\Photon\Library\Form\Core\Field;
 use Orangehill\Photon\Module;
 
@@ -35,5 +36,16 @@ class OneToMany extends Field
         $data          = $modelName::get();
 
         return $data;
+    }
+
+    public function validate()
+    {
+        $messageBag = new MessageBag();
+        if (!$this->relation_table || !\Schema::hasTable($this->relation_table)) {
+            $messageBag->add($this->name, 'Invalid relation table on ' . $this->name);
+        }
+
+        return $messageBag->isEmpty() ? true : $messageBag;
+
     }
 }

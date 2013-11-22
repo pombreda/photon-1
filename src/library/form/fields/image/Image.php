@@ -28,24 +28,39 @@ class Image extends Field
 
         $this->module             = Module::find($field->module_id);
         $this->relativeFolderPath = Config::get('photon::photon.media_folder')
-            . '/images/'
-            . $this->module->table_name
-            . '/'
-            . snake_case($this->name);
+            . "/{$this->module->table_name}/"
+            . $this->column_name;
         $this->storageFolderPath  = public_path($this->relativeFolderPath);
     }
 
+    /**
+     * Get a relative path if the value isn't a valid URL, get the full url otherwise
+     *
+     * @return string
+     */
     public function getHtmlValue()
     {
         return filter_var($this->getValue(), FILTER_VALIDATE_URL)
             ? : public_path($this->getValue());
     }
 
+    /**
+     * Uninstall hook that triggers an image directory removal
+     *
+     * @return $this
+     */
     public function uninstall()
     {
         $this->removeDirectory($this->storageFolderPath);
+
+        return $this;
     }
 
+    /**
+     * Remove a directory from the system
+     *
+     * @param $dir string Directory path
+     */
     protected function removeDirectory($dir)
     {
         $it    = new \RecursiveDirectoryIterator($dir);
@@ -64,6 +79,11 @@ class Image extends Field
         rmdir($dir);
     }
 
+    /**
+     * @param UploadedFile $input Uploaded Image File
+     *
+     * @return string|false
+     */
     public function parse($input = null)
     {
         if ($input instanceof UploadedFile && in_array($input->getMimeType(), $this->allowedTypes)) {
@@ -82,6 +102,9 @@ class Image extends Field
         return $this->hash ? : ($this->hash = str_replace(array('.', ' '), '', microtime()));
     }
 
+    /**
+     * @return Image
+     */
     public function update()
     {
         if (!($this->uploadedFile instanceof UploadedFile)) {
@@ -91,25 +114,41 @@ class Image extends Field
         $this->delete($this->row['id']);
 
         $fullPath        = $this->storageFolderPath . '/' . $this->temporaryName;
-        $newName         = str_replace("{$this->hash}::", $this->row['id'] . '_', $this->temporaryName);
-        $newPath         = $this->storageFolderPath . '/' . $newName;
-        $newRelativePath = $this->relativeFolderPath . '/' . $newName;
+        $newName         = str_replace("{$this->hash}::", '', $this->temporaryName);
+        $newPath         = "{$this->storageFolderPath}/{$this->row['id']}/{$newName}";
+        $newRelativePath = "{$this->relativeFolderPath}/{$this->row['id']}/{$newName}";
 
+        mkdir("{$this->storageFolderPath}/{$this->row['id']}", 0777, true);
         rename($fullPath, $newPath);
 
-        \DB::table($this->module->table_name)->where('id', $this->row['id'])->update(array(
-                $this->column_name => $newRelativePath
-            )
-        );
+        \DB::table($this->module->table_name)
+            ->where('id', $this->row['id'])
+            ->update(array(
+                    $this->column_name => $newRelativePath
+                )
+            );
 
         return $this;
     }
 
-    public function delete($id = null)
+    /**
+     * Removes an image directory and updates the parent row
+     *
+     * @param int $id Id of the row that contains this entry
+     *
+     * @return Image
+     */
+    public function delete($id = null, array $args = array())
     {
-        $files = glob("{$this->storageFolderPath}/{$id}_*");
-        foreach ($files as $file) {
-            @unlink($file);
+        if ($this->module instanceof Module) {
+            \DB::table($this->module->table_name)
+                ->where('id', $id)
+                ->update(array($this->column_name => ''));
+        }
+
+        $dir = "{$this->storageFolderPath}/{$id}";
+        if (is_dir($dir)) {
+            $this->removeDirectory("{$this->storageFolderPath}/{$id}");
         }
 
         return $this;

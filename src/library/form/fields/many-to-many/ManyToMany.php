@@ -7,6 +7,7 @@
 namespace Orangehill\Photon\Library\Form\Fields\ManyToMany;
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\MessageBag;
 use Orangehill\Photon\Library\Form\Core\Field;
 use Orangehill\Photon\Module;
 
@@ -118,7 +119,7 @@ class ManyToMany extends Field
      *
      * @return $this
      */
-    public function delete($id = null)
+    public function delete($id = null, array $args = array())
     {
         $this->removeByMainId($id);
 
@@ -181,5 +182,22 @@ class ManyToMany extends Field
         $this->selected = $selected;
 
         return $selected;
+    }
+
+    public function validate()
+    {
+        $messageBag = new MessageBag();
+        $pivotInfo  = $this->getPivotInfo();
+        if (!$this->relation_table || !\Schema::hasTable($this->relation_table)) {
+            $messageBag->add($this->name, 'Invalid relation table on ' . $this->name);
+        }
+
+        if (\Schema::hasTable($pivotInfo['pivot_table'])) {
+            $messageBag->add($this->name, "Pivot table {$pivotInfo['pivot_table']} already exists.");
+        }
+
+
+        return $messageBag->isEmpty() ? true : $messageBag;
+
     }
 }

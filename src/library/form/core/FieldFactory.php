@@ -9,15 +9,22 @@
 namespace Orangehill\Photon\Library\Form\Core;
 
 
+use Orangehill\Photon\Field;
+
 class FieldFactory
 {
 
-    public static function make($field)
+    /**
+     * @param $fieldType
+     *
+     * @return Field
+     */
+    public static function make($fieldType)
     {
-        $fieldName = is_a($field, '\Orangehill\Photon\Field') ? $field->type : $field;
+        $fieldName = is_a($fieldType, '\Orangehill\Photon\Field') ? $fieldType->type : $fieldType;
         $classStub = '\Orangehill\Photon\Library\Form\Fields\%s\%s';
         $class     = sprintf($classStub, studly_case($fieldName), studly_case($fieldName));
 
-        return new $class($fieldName === $field ? null : $field);
+        return new $class($fieldName === $fieldType ? null : $fieldType);
     }
 }

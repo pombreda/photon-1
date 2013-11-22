@@ -21,7 +21,7 @@ class Field
     protected $field;
     protected $row;
 
-    public function __construct(\Orangehill\Photon\Field $field)
+    public function __construct(\Orangehill\Photon\Field $field = null)
     {
         $this->field = $field;
         $this->registerViewNamespace();
@@ -199,6 +199,11 @@ class Field
         return $this;
     }
 
+    /**
+     * Hook called when removing a field from a module
+     *
+     * @return $this
+     */
     public function uninstall()
     {
         return $this;
@@ -215,7 +220,7 @@ class Field
         return $this;
     }
 
-    public function delete($id = null)
+    public function delete($id = null, array $args = array())
     {
         return $this;
     }

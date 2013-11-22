@@ -23,6 +23,10 @@ Route::group(array('before' => 'is_admin'), function () {
         Route::post('admin/{module}', '\Orangehill\Photon\ModuleController@createEntry');
         Route::get('admin/{module}', '\Orangehill\Photon\ModuleController@moduleIndex');
 
+        Route::controller('admin/resource/media/{tableName}/{fieldName}/{entryId}/{resourceName}',
+            '\Orangehill\Photon\ResourceController'
+        );
+
         Route::controller('admin/{module}/{id}', '\Orangehill\Photon\ModuleController');
 
 

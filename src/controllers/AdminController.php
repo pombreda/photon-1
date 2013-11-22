@@ -1,22 +1,14 @@
 <?php namespace Orangehill\Photon;
 
-    //error_reporting(0);
+//error_reporting(0);
+use Illuminate\Database\Eloquent\Collection;
+
 /**
  * Handles all requests related to managing the data models
  */
 class AdminController extends \Controller
 {
 
-    /** @var ModuleManager */
-//    protected $moduleManager;
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-//        $this->moduleManager = $manager;
-    }
 
     /**
      * Gets the main menu
@@ -25,17 +17,14 @@ class AdminController extends \Controller
      */
     public static function getMainMenu()
     {
-        // Get all the folder type modules
-        $folders = Module::roots()->where('is_folder', 1)->get()->toArray();
+        $folders = Folder::with('modules')->orderBy('lft')->get()->filter(function ($e) {
+                return !$e->modules->isEmpty();
+            }
+        );
 
-        // This is anonoptics specific way of creating a menu. Should be handled differently.
-        foreach ($folders as $folder) {
-            $folder['children'] = Module::roots()->where('parent_module', $folder['id'])->get();
-            $output[]           = $folder;
-        }
+        $freeModules = Module::whereNull('folder_id')->orderBy('lft')->get();
 
-        return $output;
-
+        return $folders->merge($freeModules);
     }
 
     /**

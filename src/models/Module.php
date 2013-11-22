@@ -7,7 +7,7 @@ use Orangehill\Photon\Library\Form\Core\FieldCollection;
 
 class Module extends Node
 {
-    protected $fillable = array('name', 'table_name', 'parent_module', 'nestable', 'is_folder');
+    protected $fillable = array('name', 'table_name', 'folder_id', 'nestable', 'is_folder');
     /** @var  FieldCollection */
     protected $fieldCollection;
 
@@ -33,6 +33,12 @@ class Module extends Node
         // delete the module
         return parent::delete();
     }
+
+    public function folder()
+    {
+        return $this->belongsTo('Orangehill\Photon\Folder', 'folder_id');
+    }
+
 
     public function setFieldValues(array $row = array())
     {
