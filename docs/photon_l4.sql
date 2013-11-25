@@ -3,18 +3,12 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 22, 2013 at 10:20 PM
+-- Generation Time: Nov 25, 2013 at 04:35 PM
 -- Server version: 5.5.33
 -- PHP Version: 5.5.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
 
 --
 -- Database: `photon_l4`
@@ -47,7 +41,7 @@ CREATE TABLE `fields` (
   KEY `fields_parent_id_index` (`parent_id`),
   KEY `fields_lft_index` (`lft`),
   KEY `fields_rgt_index` (`rgt`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=184 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=185 ;
 
 --
 -- Dumping data for table `fields`
@@ -76,16 +70,17 @@ INSERT INTO `fields` (`id`, `name`, `type`, `relation_table`, `column_name`, `co
 (180, 'Saviors', 'many-to-many', 'superheroes', 'saviors', '', '', 53, NULL, 225, 226, 0, '2013-11-20 14:28:35', '2013-11-20 14:28:35'),
 (181, 'tester_name', 'input-text', '', 'tester_name', 'string', '', 54, NULL, 227, 228, 0, '2013-11-21 10:58:40', '2013-11-21 10:58:40'),
 (182, 'Double Name', 'input-text', '', 'double_name', 'string', '', 55, NULL, 229, 230, 0, '2013-11-21 11:12:19', '2013-11-21 11:12:19'),
-(183, 'Name', 'input-text', '', 'name', 'string', '', 56, NULL, 231, 232, 0, '2013-11-22 13:41:27', '2013-11-22 13:41:27');
+(183, 'Name', 'input-text', '', 'name', 'string', '', 56, NULL, 231, 232, 0, '2013-11-22 13:41:27', '2013-11-22 13:41:27'),
+(184, 'Field Tester Id', 'one-to-many', 'superheroes', 'field_tester_id', 'integer', '', 55, NULL, 233, 234, 0, '2013-11-25 13:41:46', '2013-11-25 13:41:47');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `field_tester`
+-- Table structure for table `field_testers`
 --
 
-DROP TABLE IF EXISTS `field_tester`;
-CREATE TABLE `field_tester` (
+DROP TABLE IF EXISTS `field_testers`;
+CREATE TABLE `field_testers` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `lft` int(11) NOT NULL,
   `rgt` int(11) NOT NULL,
@@ -221,7 +216,8 @@ INSERT INTO `migrations` (`migration`, `batch`) VALUES
 ('2013_11_21_121217_create_second_field_testers_table', 26),
 ('2013_11_21_121218_add_double_name_to_second_field_testers_table', 26),
 ('2013_11_22_144126_create_folders_table', 27),
-('2013_11_22_144127_add_name_to_folders_table', 27);
+('2013_11_22_144127_add_name_to_folders_table', 27),
+('2013_11_25_144146_add_field_tester_id_to_second_field_testers_table', 28);
 
 -- --------------------------------------------------------
 
@@ -264,7 +260,7 @@ INSERT INTO `modules` (`id`, `name`, `table_name`, `folder_id`, `nestable`, `ico
 (50, 'High Mountains', 'high_mountains', NULL, 1, '', NULL, 9, 10, 0, '2013-11-20 11:06:35', '2013-11-22 13:41:39', 1),
 (52, 'Superclouds', 'superclouds', 1, 0, '', NULL, 11, 12, 0, '2013-11-20 13:24:30', '2013-11-22 13:41:39', 1),
 (53, 'Spaces', 'spaces', 2, 0, '', NULL, 13, 14, 0, '2013-11-20 13:58:43', '2013-11-22 13:41:39', 1),
-(54, 'Field Tester', 'field_tester', NULL, 0, '', NULL, 15, 16, 0, '2013-11-21 10:58:40', '2013-11-22 13:41:39', 0),
+(54, 'Field Tester', 'field_testers', NULL, 0, '', NULL, 15, 16, 0, '2013-11-21 10:58:40', '2013-11-22 13:41:39', 0),
 (55, 'Second Field Testers', 'second_field_testers', 2, 0, '', NULL, 17, 18, 0, '2013-11-21 11:12:18', '2013-11-22 13:41:39', 1),
 (56, 'Folders', 'folders', 2, 1, '', NULL, 1, 2, 0, '2013-11-22 13:41:27', '2013-11-22 13:41:39', 1);
 
@@ -284,6 +280,7 @@ CREATE TABLE `second_field_testers` (
   `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `double_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `field_tester_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
 
@@ -291,8 +288,8 @@ CREATE TABLE `second_field_testers` (
 -- Dumping data for table `second_field_testers`
 --
 
-INSERT INTO `second_field_testers` (`id`, `lft`, `rgt`, `parent_id`, `depth`, `created_at`, `updated_at`, `double_name`) VALUES
-(1, 1, 2, NULL, 0, '2013-11-21 11:12:51', '2013-11-21 11:12:51', 'Superman');
+INSERT INTO `second_field_testers` (`id`, `lft`, `rgt`, `parent_id`, `depth`, `created_at`, `updated_at`, `double_name`, `field_tester_id`) VALUES
+(1, 1, 2, NULL, 0, '2013-11-21 11:12:51', '2013-11-21 11:12:51', 'Superman', 0);
 
 -- --------------------------------------------------------
 
@@ -458,7 +455,7 @@ CREATE TABLE `superhero_world_wonder` (
   PRIMARY KEY (`id`),
   KEY `superhero_world_wonder_superhero_id_index` (`superhero_id`),
   KEY `superhero_world_wonder_world_wonder_id_index` (`world_wonder_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -513,7 +510,3 @@ ALTER TABLE `space_superhero`
 ALTER TABLE `superhero_world_wonder`
   ADD CONSTRAINT `superhero_world_wonder_superhero_id_foreign` FOREIGN KEY (`superhero_id`) REFERENCES `superheroes` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `superhero_world_wonder_world_wonder_id_foreign` FOREIGN KEY (`world_wonder_id`) REFERENCES `world_wonders` (`id`) ON DELETE CASCADE;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
