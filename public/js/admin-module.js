@@ -33,6 +33,7 @@ console.log("Init this here");
                     context.galleryImgLeave($(this));
                 }
             });
+
             $(document).on('click', '.menu-delete', function() {
                 $('.menu-cell-wrap, .hover-menu p').fadeOut(100, function() {
                     $('.confirm-delete').fadeIn(100);
@@ -44,24 +45,28 @@ console.log("Init this here");
                 });
                 return false;
             });
+
             $(document).on('click', '#del-confirm', function() {
-                var parent = $(this).parents('.image-cell');
+                var $parent = $(this).parents('.image-cell'),
+                    resource = $parent.find('.user-image').attr('src');
                 $.ajax({
-                    url    : '/admin/resource/' + parent.find('user-image').attr('src'),
+                    url    : '/admin/resource' + $parent.find('.user-image').attr('src'),
                     type   : 'DELETE',
                     success: function(result) {
                         console.log("Yay, deleted");
-                        $('#image-cell-image').fadeOut(300, function() {
+                        $parent.slideUp('fast', function() {
                             $(this).remove();
                         });
                     }
                 });
                 return false;
             });
+
             $(document).on('click', '#delete-module', function() {
                 $('#admin-module-form').append('<input type="hidden" name="_method" id="_method" value="DELETE" />').submit();
                 return false;
             });
+
             $('#commit-module').click(function() {
                 // Set the button to loading state (Twitter Bootstrap feature)
                 $(this).button('loading');

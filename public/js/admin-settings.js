@@ -1,22 +1,35 @@
 "use strict";
 function AdminSettings() {
     // Store reference to this for use in methods
-    var self = this;
+    var self = this,
     // Base api url for ajax calls
-    var baseApiUrl = '/admin/creator/';
-    var baseSettingsPath = '/admin/settings';
+        baseApiUrl = '/admin/creator/',
+        baseSettingsPath = '/admin/settings',
     // Create a jQ object out of a template and store it for replication
-    var fieldTemplate = (function() {
-        var $tpl = $('#module_field_template .module-field').clone();
-        $('#module_field_template').remove();
-        return $tpl;
-    })();
+        fieldTemplate = (function() {
+            var $tpl = $('#module_field_template').find('.module-field').clone();
+            var $relTable = $tpl.find('[data-input-name=relation_table]').empty();
+            $.ajax({
+                url    : '/admin/dbinfo/modules',
+                type   : 'get',
+                async  : false,
+                success: function(response) {
+                    $relTable.append($('<option/>').val('').text('None'));
+                    $.each(response.content, function(index, element) {
+                        $relTable.append($('<option/>').val(element.table_name).text(element.name));
+                    });
+
+                    $('#module_field_template').remove();
+                }
+            });
+            return $tpl;
+        })(),
     // Store loader jQ object
-    var $loader = $('.loader');
+        $loader = $('.loader'),
     // New fields counter
-    var fieldCounter = 0;
+        fieldCounter = 0,
     // Settings form
-    var $creatorForm = $('#admin_settings_form');
+        $creatorForm = $('#admin_settings_form');
 
     /**
      * Send a network request
@@ -25,8 +38,8 @@ function AdminSettings() {
      * @returns void
      */
     this.postAction = function(action, successCallback, errorCallback, method) {
-        var method = method || 'post';
-        var $form = $('#admin_settings_form');
+        var method = method || 'post',
+            $form = $('#admin_settings_form');
 
         // Check if form is valid before submitting
         if (!$form[0].checkValidity()) {
@@ -44,9 +57,6 @@ function AdminSettings() {
             throw 'Trying to ' + action + ' with no module id specified';
         }
 
-        if (!$('#nestable').is(':checked')) {
-            $('#nestable_hidden').prop('disabled', false);
-        }
         // Make the call
         $.ajax({
             url     : baseApiUrl + action,
@@ -64,7 +74,6 @@ function AdminSettings() {
             }
         });
 
-        $('#nestable_hidden').prop('disabled', true);
     }
 
     /**
@@ -86,12 +95,12 @@ function AdminSettings() {
         }, data || {});
 
         // Store used selectors
-        var $newField = getFieldTemplate();
-        var $newFieldInputs = $newField.find('.module-field-input');
-        var $container = $("#module-fields");
+        var $newField = getFieldTemplate(),
+            $newFieldInputs = $newField.find('.module-field-input'),
+            $container = $("#module-fields"),
 
         // This will be inserted into name in case added field is new
-        var newFieldInsertion = !data ? 'new][' : '';
+            newFieldInsertion = !data ? 'new][' : '';
 
         // Go through all inputs, assign them names and fill them up
 
@@ -106,8 +115,14 @@ function AdminSettings() {
             $newFieldInputs.filter("[data-input-name=id]").prop('disabled', true);
         }
 
-        $newFieldInputs.filter('[data-input-name=column_name], [data-input-name=relation_table], [data-input-name=column_type]'
-        ).prop('disabled', fieldData.locked).filter('select').select2();
+        $newFieldInputs.filter('' +
+                '[data-input-name=column_name], ' +
+                '[data-input-name=relation_table], ' +
+                '[data-input-name=column_type]'
+            ).prop('disabled', fieldData.locked)
+            .filter('select')
+            .addClass(fieldData.locked ? 'locked' : '')
+            .select2();
 
         $newField.attr({
             'data-field-id': fieldData.id
@@ -137,6 +152,13 @@ function AdminSettings() {
         // Add a blank field on click
         $('#add-new-field').click(function() {
             addField();
+        });
+
+        $creatorForm.add($moduleFields).on('change', '[type=checkbox]', function() {
+            var num = Number($(this).is(':checked'));
+            var name = $(this).attr('name');
+            $('input[name="' + name + '"]').val(num);
+            console.log("Changing to ", num);
         });
 
         // Delete a field on click
@@ -175,7 +197,9 @@ function AdminSettings() {
             ].indexOf($selected.val()) == -1).select2();
 
             // Enable/disable column type selection
-            $colType.prop('readonly', $selected.attr('data-column-type').toLowerCase() === 'readonly').select();
+            if (!$colType.prop('readonly')) {
+                $colType.prop('readonly', $selected.attr('data-column-type').toLowerCase() === 'readonly').select();
+            }
         });
 
         // Bind Validate button
@@ -194,6 +218,20 @@ function AdminSettings() {
                         text : $msgList.html()
                     });
                 } else {
+                    var changesExist = false;
+                    jQuery.each(response.changes, function(i, e) {
+                        if (e.length) {
+                            changesExist = true;
+                            return false;
+                        }
+                    });
+                    if (!changesExist) {
+                        $.pnotify({
+                            title: 'No changes',
+                            type : 'info'
+                        });
+                        return false;
+                    }
                     var $changeblock = generateChangeBlock(response.changes);
                     var $container = $('#report').show().find('.report-container').empty().append($changeblock);
                     $creatorForm.hide();
@@ -229,6 +267,12 @@ function AdminSettings() {
         $moduleFields.on('change', '[data-input-name=type]', function() {
             var $moduleField = $(this).parents('.module-field');
             var $columnType = $moduleField.find('[data-input-name=column_type]');
+
+            // Early break if this field shouldn't be touched
+            if ($columnType.hasClass('locked')) {
+                return;
+            }
+
             var typeMap = {
                 'input-text'  : 'string',
                 'rich-text'   : 'text',
@@ -236,27 +280,40 @@ function AdminSettings() {
                 'inline-image': 'string',
                 'boolean'     : 'smallInteger',
                 'calendar'    : 'timestamp',
-                'onle-to-many': 'integer',
+                'one-to-many' : 'integer',
                 'many-to-many': 'disabled',
                 'weight'      : 'integer',
                 'hidden'      : 'string'
             }
             var value = typeMap[$(this).val()] || 'string';
+            if ($columnType.val() != value) {
+                $.pnotify({
+                    title: 'Type change',
+                    type : 'info',
+                    text : 'Column type changed from ' + $columnType.val() + ' to ' + value
+                });
+            }
             $columnType.val(value).prop('disabled', value === 'disabled').select2();
+            // Hide the column type field if it's binding suggests disabling
+            $columnType.parents('.span2').prev().andSelf().toggleClass('invisible', $columnType.prop('disabled'));
         });
     }
 
     function generateChangeBlock(changeSections) {
         var $block = $('<div/>');
+
         jQuery.each(changeSections, function(sectionsIndex, section) {
             jQuery.each(section, function(changesetIndex, changeset) {
                 var $setContainer = $('<div/>').addClass('changeset');
+
                 createChangesetHeading(changeset).appendTo($setContainer);
+
                 if (changeset.type !== 'delete') {
                     jQuery.each(changeset.changes, function(changeIndex, change) {
-                        createChangeEntry(change).appendTo($setContainer);
+                        $setContainer.append(createChangeEntry(change));
                     });
                 }
+
                 $setContainer.appendTo($block);
             });
         });
@@ -281,14 +338,17 @@ function AdminSettings() {
     }
 
     function createChangeEntry(change) {
+        if (change.type == 'same') {
+            return false;
+        }
         if (change.type == 'create') change.type = 'set';
 
-        var titleText = change.type + ' ' + change.name + ':';
+        var titleText = change.type + ' ' + change.name + ':',
+            $entry = $('<div/>').addClass('changeset-entry'),
+            $title = $('<span/>').text(titleText.toTitleCase().ucword()),
+            $from = $('<span/>').addClass('label label-important').text(change.original),
+            $to = $('<span/>').addClass('label label-success').text(change.new);
 
-        var $entry = $('<div/>').addClass('changeset-entry');
-        var $title = $('<span/>').text(titleText.toTitleCase().ucword());
-        var $from = $('<span/>').addClass('label label-important').text(change.original);
-        var $to = $('<span/>').addClass('label label-success').text(change.new);
         $entry.append($title).append(' ');
         if (change.original) {
             $entry.append($from).append(' → ');
@@ -306,11 +366,11 @@ function AdminSettings() {
      * @returns void
      */
     function mirrorToSnake(from, to, fromMethod, toMethod) {
-        var fromMethod = fromMethod || 'val';
-        var toMethod = toMethod || 'val';
+        var fromMethod = fromMethod || 'val',
+            toMethod = toMethod || 'val',
+            $from = typeof from === 'string' ? $(from) : from,
+            $to = typeof to === 'string' ? $(to) : to;
 
-        var $from = typeof from === 'string' ? $(from) : from;
-        var $to = typeof to === 'string' ? $(to) : to;
         if (!$to.prop("readonly") && parseInt($to.attr('data-bound'))) {
             var valFrom = (fromMethod === 'val' ? $from.val() : $from.text()).trim().toSnakeCase();
             toMethod === 'val' ? $to.val(valFrom) : $to.text(valFrom);
@@ -342,69 +402,9 @@ function AdminSettings() {
 
     construct();
 }
+
+// Run all this stuff
 (function() {
     var adminSettings = new AdminSettings();
     adminSettings.fillWithFields(fieldsJson);
 })();
-//$('#save-module').click(function() {
-//    // $('#admin-settings-form').submit();
-//    // return false;
-//    $.ajax({
-//        type: "POST",
-//        url: $('#admin-settings-form').attr('action'),
-//        data: $('#admin-settings-form').serialize(),
-//        success: function(response) {
-//            if (response.status === 'success') {
-//                context.showReport(response.data.report);
-//            } else if (response.status === 'error') {
-//                $.pnotify({
-//                    title: 'Error',
-//                    type: 'info',
-//                    text: response.message
-//                });
-//            }
-//        }
-//    });
-//});
-//$('#remove-module').click(function() {
-//    $('#remove_request').val(1);
-//    $('#save-module').click();
-//    return false;
-//});
-//$('#commit-module').click(function() {
-//    // Set the button to loading state (Twitter Bootstrap feature)
-//    $(this).button('loading');
-//    // Hide the cancel button
-//    $('#cancel-commit').hide();
-//    // Submit the form
-//    $('#admin-settings-form').submit();
-//    return false;
-//});
-//$('#save-as-folder').click(function() {
-//    // Set the button to loading state (Twitter Bootstrap feature)
-//    $(this).button('loading');
-//    // Set the save_as_folder option true
-//    $('#is_folder').val('1');
-//    // Submit the form
-//    $('#admin-settings-form').submit();
-//    return false;
-//});
-//$('#cancel-commit').click(function() {
-//    context.cancelCommit();
-//    $('#remove_request').val(0);
-//    return false;
-//});
-//context.showReport = function(report) {
-//    $('.reportContainer').html(report);
-//    $('#report').show();
-//    $('#form-controls').hide();
-//    $('#module-fields').hide();
-//    $('#module-settings').hide();
-//},
-//        context.cancelCommit = function() {
-//    $('.reportContainer').empty();
-//    $('#report').hide();
-//    $('#form-controls').show();
-//    $('#module-fields').show();
-//    $('#module-settings').show();
-//}
