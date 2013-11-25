@@ -91,7 +91,7 @@ class SettingsValidator {
 		// Module Rules
 		$rules = array();
 
-		$rules['module_name'] = 'required|unique:modules,module_name';
+		$rules['name'] = 'required|unique:modules,name';
 		$rules['table_name'] = 'required|not_in:fields,groups,migrations,modules,throttle,users,users_groups|unique:modules,table_name';
 
 		$messages = array();
@@ -110,7 +110,7 @@ class SettingsValidator {
 
 		// Modify rules if in editing mode
 		if (is_numeric($id)) {
-			$rules['module_name'] .= "," . $id;
+			$rules['name'] .= "," . $id;
 			unset($rules['table_name']);
 		}
 

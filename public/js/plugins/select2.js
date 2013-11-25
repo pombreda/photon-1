@@ -662,8 +662,8 @@ the specific language governing permissions and limitations under the Apache Lic
                 // we monitor the change event on the element and trigger it, allowing for two way synchronization
                 this.monitorSource();
             }
-
-            if (opts.element.is(":disabled") || opts.element.is("[readonly='readonly']")) this.disable();
+            console.log("Doing this", opts.element);
+            if (opts.element.is(":disabled") || opts.element.is("[readonly='readonly']") || opts.element.prop('readonly') || opts.element.attr('readonly')) this.disable();
         },
 
         // abstract
