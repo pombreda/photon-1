@@ -8,8 +8,6 @@
 
 namespace Orangehill\Photon\Library\Creator\Report\Changes;
 
-use Orangehill\Photon\Library\Creator\Report\Changes\Change;
-
 class Changeset implements \Countable
 {
 
@@ -29,6 +27,11 @@ class Changeset implements \Countable
         }
     }
 
+    public function addChange(Change $change)
+    {
+        $this->changes[] = $change;
+    }
+
     public function toArray()
     {
         $changes = array();
@@ -43,23 +46,44 @@ class Changeset implements \Countable
             'changes'    => $changes,
             'table_name' => $this->getTableName()
         );
+
         return $cmp;
     }
 
-    public function getTableName()
+    public function getType()
     {
-        return $this->tableName;
+        return $this->type;
     }
 
-    public function setTableName($tableName)
+    public function setType($type)
     {
-        $this->tableName = $tableName;
+        $this->type = $type;
+
         return $this;
     }
 
-    public function getChanges()
+    public function getItemType()
     {
-        return $this->changes;
+        return $this->itemType;
+    }
+
+    public function setItemType($itemType)
+    {
+        $this->itemType = $itemType;
+
+        return $this;
+    }
+
+    public function getItemName()
+    {
+        return $this->itemName;
+    }
+
+    public function setItemName($itemName)
+    {
+        $this->itemName = $itemName;
+
+        return $this;
     }
 
     public function getItemId()
@@ -70,50 +94,31 @@ class Changeset implements \Countable
     public function setItemId($itemId)
     {
         $this->itemId = $itemId;
+
         return $this;
+    }
+
+    public function getTableName()
+    {
+        return $this->tableName;
+    }
+
+    public function setTableName($tableName)
+    {
+        $this->tableName = $tableName;
+
+        return $this;
+    }
+
+    public function getChanges()
+    {
+        return $this->changes;
     }
 
     public function setChanges($changes)
     {
         $this->changes = $changes;
-        return $this;
-    }
 
-    public function addChange(Change $change)
-    {
-        $this->changes[] = $change;
-    }
-
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    public function getItemType()
-    {
-        return $this->itemType;
-    }
-
-    public function getItemName()
-    {
-        return $this->itemName;
-    }
-
-    public function setType($type)
-    {
-        $this->type = $type;
-        return $this;
-    }
-
-    public function setItemType($itemType)
-    {
-        $this->itemType = $itemType;
-        return $this;
-    }
-
-    public function setItemName($itemName)
-    {
-        $this->itemName = $itemName;
         return $this;
     }
 

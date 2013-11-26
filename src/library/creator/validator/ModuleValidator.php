@@ -8,8 +8,6 @@
 
 namespace Orangehill\Photon\Library\Creator\Validator;
 
-use Orangehill\Photon\Module;
-
 class ModuleValidator
 {
 
@@ -20,7 +18,7 @@ class ModuleValidator
      */
     public static function validateCreate(array $input)
     {
-        $rules = array(
+        $rules  = array(
             'id'            => null,
             'name'          => null,
             'table_name'    => null,
@@ -30,16 +28,18 @@ class ModuleValidator
             'icon'          => null,
             'parent_id'     => null
         );
-        $fields = array_merge(array_map(function($e) {
-                $e = null;
-            }, $rules), $input);
+        $fields = array_merge(array_map(function ($e) {
+                    $e = null;
+                }, $rules
+            ), $input
+        );
 
         $validator = \Validator::make($fields, $rules);
     }
 
     public function isValid()
     {
-        
+
     }
 
 }

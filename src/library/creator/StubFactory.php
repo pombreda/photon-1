@@ -9,9 +9,19 @@
 namespace Orangehill\Photon\Library\Creator;
 
 
+use Orangehill\Photon\Library\Creator\Stubs\Stub;
+
 class StubFactory
 {
 
+    /**
+     * Generates a stub
+     *
+     * @param string $type Stub type
+     * @param array  $args Stub data
+     *
+     * @return Stub
+     */
     public static function make($type, array $args = array())
     {
         $stub = null;

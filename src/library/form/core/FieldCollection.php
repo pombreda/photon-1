@@ -88,6 +88,7 @@ class FieldCollection implements \ArrayAccess, \Iterator
         foreach ($this->fields as $field) {
             call_user_func_array(array($field, $func), $args);
         }
+
         return $this;
     }
 

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Description of Comparator
+ * Module comparator
  *
  * @author Ivan Batić <ivan.batic@live.com>
  */
@@ -29,9 +29,11 @@ class Comparator
         return $this->input;
     }
 
-    public function getTableName()
+    public function setInput($input)
     {
-        return $this->tableName;
+        $this->input = $input;
+
+        return $this;
     }
 
     public function getIdentifier()
@@ -39,24 +41,22 @@ class Comparator
         return $this->identifier;
     }
 
-    public function setInput($input)
-    {
-        $this->input = $input;
-        return $this;
-    }
-
-    public function setTableName($tableName)
-    {
-        $this->tableName = $tableName;
-        return $this;
-    }
-
     public function setIdentifier($identifier)
     {
         $this->identifier = $identifier;
+
         return $this;
     }
 
+    /**
+     * Compares a single entry to the existing one
+     *
+     * @param array $input
+     * @param null  $original
+     *
+     * @return Changeset
+     * @throws Exception
+     */
     public function compareSingle(array $input = array(), $original = null)
     {
         // TODO: add a more specific exception
@@ -75,7 +75,7 @@ class Comparator
             if (is_array($original)) {
                 $record = $original;
             } else {
-                $record = (array) \DB::table($this->getTableName())->where('id', $input['id'])->first();
+                $record = (array)\DB::table($this->getTableName())->where('id', $input['id'])->first();
             }
         }
 
@@ -93,7 +93,20 @@ class Comparator
             ));
             $this->changeset->addChange($change);
         }
+
         return $this->changeset;
+    }
+
+    public function getTableName()
+    {
+        return $this->tableName;
+    }
+
+    public function setTableName($tableName)
+    {
+        $this->tableName = $tableName;
+
+        return $this;
     }
 
 

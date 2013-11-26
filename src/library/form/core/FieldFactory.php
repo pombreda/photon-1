@@ -15,6 +15,8 @@ class FieldFactory
 {
 
     /**
+     * Creates a form field based on Photon field
+     *
      * @param $fieldType
      *
      * @return Field

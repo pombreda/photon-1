@@ -39,7 +39,13 @@ class Module extends Node
         return $this->belongsTo('Orangehill\Photon\Folder', 'folder_id');
     }
 
-
+    /**
+     * Fills the field collection (created if needed) with field values of this particular instance
+     *
+     * @param array $row Array of field_name => value entries
+     *
+     * @return $this
+     */
     public function setFieldValues(array $row = array())
     {
         // Go through the field collection and assign a value to each field
@@ -52,6 +58,11 @@ class Module extends Node
         return $this;
     }
 
+    /**
+     * Creates a FieldCollection based the current Module instance
+     *
+     * @return FieldCollection
+     */
     public function getFieldCollection()
     {
         if ($this->fieldCollection instanceof FieldCollection) {

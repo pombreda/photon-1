@@ -23,9 +23,28 @@ class Change
         $this->setOriginal($from)->setNew($to);
     }
 
-    public function getOriginal()
+    public function toArray()
     {
-        return $this->original;
+        return array(
+            'name'       => $this->getName(),
+            'new'        => $this->getNew(),
+            'original'   => $this->getOriginal(),
+            'type'       => $this->getType(),
+            'id'         => $this->getId(),
+            'table_name' => $this->getTableName()
+        );
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     public function getNew()
@@ -33,15 +52,22 @@ class Change
         return $this->new;
     }
 
-    public function setOriginal($original)
-    {
-        $this->original = $original;
-        return $this;
-    }
-
     public function setNew($new)
     {
         $this->new = $new;
+
+        return $this;
+    }
+
+    public function getOriginal()
+    {
+        return $this->original;
+    }
+
+    public function setOriginal($original)
+    {
+        $this->original = $original;
+
         return $this;
     }
 
@@ -53,25 +79,15 @@ class Change
     public function setType($type)
     {
         $this->type = $type;
-        return $this;
-    }
 
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function setName($name)
-    {
-        $this->name = $name;
         return $this;
     }
 
     public function detectType()
     {
         $original = $this->getOriginal();
-        $new = $this->getNew();
-        $type = '';
+        $new      = $this->getNew();
+        $type     = '';
         if ($original == $new) {
             $type = 'same';
         } elseif (isset($original) && isset($new) && $original != $new) {
@@ -81,6 +97,7 @@ class Change
         } elseif (!isset($original) && isset($new)) {
             $type = 'create';
         }
+
         return $type;
     }
 
@@ -92,6 +109,7 @@ class Change
     public function setId($id)
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -103,19 +121,8 @@ class Change
     public function setTableName($tableName)
     {
         $this->tableName = $tableName;
-        return $this;
-    }
 
-    public function toArray()
-    {
-        return array(
-            'name'       => $this->getName(),
-            'new'        => $this->getNew(),
-            'original'   => $this->getOriginal(),
-            'type'       => $this->getType(),
-            'id'         => $this->getId(),
-            'table_name' => $this->getTableName()
-        );
+        return $this;
     }
 
 }

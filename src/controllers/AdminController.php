@@ -17,11 +17,15 @@ class AdminController extends \Controller
      */
     public static function getMainMenu()
     {
-        $folders = Folder::with('modules')->orderBy('lft')->get()->filter(function ($e) {
-                return !$e->modules->isEmpty();
-            }
-        );
-
+        /* @var $folders Collection */
+        $folders = Folder::with('modules')
+            ->orderBy('lft')
+            ->get()
+            ->filter(function ($e) {
+                    return !$e->modules->isEmpty();
+                }
+            );
+        /* @var $freeModules Collection */
         $freeModules = Module::whereNull('folder_id')->orderBy('lft')->get();
 
         return $folders->merge($freeModules);

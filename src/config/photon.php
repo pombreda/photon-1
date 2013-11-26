@@ -53,6 +53,7 @@ return array(
 	 * @type string
 	 */
 	'package_assets_uri' => Request::root() . '/packages/orangehill/photon',
+    // Name of the folder which will contain all file uploads
     'media_folder' => 'media',
 
     // `entry` or `blank`

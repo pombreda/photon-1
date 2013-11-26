@@ -13,6 +13,8 @@ use Orangehill\Photon\Module;
 class ModuleDiff
 {
     /**
+     * Creates a module diff based on an module input array
+     *
      * @param $moduleInput
      *
      * @return array

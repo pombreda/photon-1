@@ -72,6 +72,11 @@ class Field
         return $this;
     }
 
+    /**
+     * Calls the registered validation function
+     *
+     * @return bool
+     */
     public function validate()
     {
         if (is_callable($this->validationFunction)) {
@@ -214,12 +219,25 @@ class Field
         return $this;
     }
 
+    /**
+     * Called when updating content of the particular field
+     *
+     * @return $this
+     */
     public function update()
     {
 
         return $this;
     }
 
+    /**
+     * Called when deleting the particular field
+     *
+     * @param null  $id
+     * @param array $args
+     *
+     * @return $this
+     */
     public function delete($id = null, array $args = array())
     {
         return $this;
@@ -230,6 +248,13 @@ class Field
         return $this->field ? $this->field->$name : $this->$name;
     }
 
+    /**
+     * Called before storing the parent row data in the db
+     *
+     * @param null $input
+     *
+     * @return mixed
+     */
     public function parse($input = null)
     {
         return $input;

@@ -14,13 +14,22 @@ use Orangehill\Photon\Field;
 class FieldCreator
 {
 
-    public static function make($fieldData)
+    /**
+     * Creates a Form Field based on Photon Field and runs the Install routine if needed
+     *
+     * @param $fieldData
+     *
+     * @return Field
+     */
+    public static function make($fieldData, $install = true)
     {
         $field     = new Field($fieldData);
         $modelName = studly_case($fieldData['type']);
         $className = sprintf('\Orangehill\Photon\Library\Form\Fields\%s\%s', $modelName, $modelName);
         $formField = new $className($field);
-        $formField->install();
+        if ($install) {
+            $formField->install();
+        }
 
         return $field;
     }

@@ -16,6 +16,13 @@ use Orangehill\Photon\Module;
 class ModuleCreator
 {
 
+    /**
+     * Runs the module data through validation
+     *
+     * @param array $input
+     *
+     * @return bool|MessageBag If the validation passed, returns true, MessageBag otherwise
+     */
     public function validateModule($input)
     {
         $id = isset($input['id']) ? $input['id'] : null;
@@ -33,7 +40,9 @@ class ModuleCreator
 
         $messages = $messages->getMessageBag();
 
+        // Extracts the newly added fields
         $newFields = $this->validateNewFields($input['fields']['new'] ? : array(), $id);
+
         if ($newFields instanceof MessageBag) {
             $messages->merge($newFields->getMessages());
         }
