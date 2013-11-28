@@ -10,9 +10,9 @@ function AdminSettings() {
             var $tpl = $('#module_field_template').find('.module-field').clone();
             var $relTable = $tpl.find('[data-input-name=relation_table]').empty();
             $.ajax({
-                url    : '/admin/dbinfo/modules',
-                type   : 'get',
-                async  : false,
+                url: '/admin/dbinfo/modules',
+                type: 'get',
+                async: false,
                 success: function(response) {
                     $relTable.append($('<option/>').val('').text('None'));
                     $.each(response.content, function(index, element) {
@@ -59,11 +59,11 @@ function AdminSettings() {
 
         // Make the call
         $.ajax({
-            url     : baseApiUrl + action,
-            type    : method,
-            data    : $form.serialize(),
+            url: baseApiUrl + action,
+            type: method,
+            data: $form.serialize(),
             dataType: 'json',
-            success : function(response) {
+            success: function(response) {
                 if (typeof successCallback === 'function') {
                     successCallback(response);
                 }
@@ -84,14 +84,14 @@ function AdminSettings() {
     function addField(data) {
         // Field data can also be an event
         var fieldData = $.extend({
-            id            : !data ? fieldCounter++ : null,
-            name          : '',
-            type          : 'string',
+            id: !data ? fieldCounter++ : null,
+            name: '',
+            type: 'string',
             relation_table: '',
-            column_name   : null,
-            column_type   : null,
-            tooltip_text  : '',
-            locked        : !data ? false : true
+            column_name: null,
+            column_type: null,
+            tooltip_text: '',
+            locked: !data ? false : true
         }, data || {});
 
         // Store used selectors
@@ -193,7 +193,7 @@ function AdminSettings() {
             var $colType = $moduleField.find('.module-field-input[data-input-name=column_type]');
 
             // Enable/disable relation table selection
-            $relTable.prop('readonly', ['one-to-many', 'many-to-many'
+            $relTable.prop('disabled', ['one-to-many', 'many-to-many'
             ].indexOf($selected.val()) == -1).select2();
 
             // Enable/disable column type selection
@@ -214,8 +214,8 @@ function AdminSettings() {
                     });
                     $.pnotify({
                         title: 'Error',
-                        type : 'info',
-                        text : $msgList.html()
+                        type: 'info',
+                        text: $msgList.html()
                     });
                 } else {
                     var changesExist = false;
@@ -228,7 +228,7 @@ function AdminSettings() {
                     if (!changesExist) {
                         $.pnotify({
                             title: 'No changes',
-                            type : 'info'
+                            type: 'info'
                         });
                         return false;
                     }
@@ -274,23 +274,23 @@ function AdminSettings() {
             }
 
             var typeMap = {
-                'input-text'  : 'string',
-                'rich-text'   : 'text',
-                'image'       : 'string',
+                'input-text': 'string',
+                'rich-text': 'text',
+                'image': 'string',
                 'inline-image': 'string',
-                'boolean'     : 'smallInteger',
-                'calendar'    : 'timestamp',
-                'one-to-many' : 'integer',
+                'boolean': 'smallInteger',
+                'calendar': 'timestamp',
+                'one-to-many': 'integer',
                 'many-to-many': 'disabled',
-                'weight'      : 'integer',
-                'hidden'      : 'string'
+                'weight': 'integer',
+                'hidden': 'string'
             }
             var value = typeMap[$(this).val()] || 'string';
             if ($columnType.val() != value) {
                 $.pnotify({
                     title: 'Type change',
-                    type : 'info',
-                    text : 'Column type changed from ' + $columnType.val() + ' to ' + value
+                    type: 'info',
+                    text: 'Column type changed from ' + $columnType.val() + ' to ' + value
                 });
             }
             $columnType.val(value).prop('disabled', value === 'disabled').select2();
