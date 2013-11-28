@@ -15,8 +15,8 @@ class TestController extends \BaseController
 
     public function index()
     {
-        $var = \Folder::with('modules')->get();
-        var_dump($var);
+        $var = \Superhero::with('wonders')->get();
+        var_dump($var->toArray());
         die();
     }
 

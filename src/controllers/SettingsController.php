@@ -170,7 +170,6 @@ class SettingsController extends \BaseController
      */
     protected function save($fieldIds, $verbose = false)
     {
-        $reroute = (new TestController())->index();
         $report  = '';
 
         // Instantiate Migration Generator Class (Laravel 4 Generator Module Wrapper)

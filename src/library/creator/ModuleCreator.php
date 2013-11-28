@@ -236,9 +236,11 @@ class ModuleCreator
                 $toStringField = 'id';
                 if (is_array($changeGroups['created_fields'])) {
                     $head = head($changeGroups['created_fields']);
-                    foreach ($head['changes'] as $fieldSegment) {
-                        if ($fieldSegment['name'] == 'column_name') {
-                            $toStringField = $fieldSegment['new'];
+                    if (is_array($head['changes'])) {
+                        foreach ($head['changes'] as $fieldSegment) {
+                            if ($fieldSegment['name'] == 'column_name') {
+                                $toStringField = $fieldSegment['new'];
+                            }
                         }
                     }
                 }
