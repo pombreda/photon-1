@@ -1,6 +1,7 @@
 {
     "name": "orangehill/photon",
-    "description": "",
+    "description": "An early alpha version of Laravel based CMS system",
+    "keywords": ["laravel", "cms", "admin panel"],
     "authors": [
         {
             "name": "Tihomir Opacic",
@@ -9,6 +10,10 @@
         {
             "name": "Ivan Batic",
             "email": "ivan.batic@orangehilldev.com"
+        },
+        {
+            "name": "Ivan Milosavljevic",
+            "email": "ivan.milosavljevic@orangehilldev.com"
         }
     ],
     "require": {
