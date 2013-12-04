@@ -88,7 +88,7 @@ class Image extends Field
     {
         if ($input instanceof UploadedFile && in_array($input->getMimeType(), $this->allowedTypes)) {
             $this->uploadedFile  = $input;
-            $this->temporaryName = $imageName = $this->getHash() . "::{$input->getClientOriginalName()}";
+            $this->temporaryName = $imageName = $this->getHash() . "-{$input->getClientOriginalName()}";
             $input->move($this->storageFolderPath, $imageName);
 
             return $this->relativeFolderPath . '/' . $imageName;
@@ -114,7 +114,7 @@ class Image extends Field
         $this->delete($this->row['id']);
 
         $fullPath        = $this->storageFolderPath . '/' . $this->temporaryName;
-        $newName         = str_replace("{$this->hash}::", '', $this->temporaryName);
+        $newName         = str_replace("{$this->hash}-", '', $this->temporaryName);
         $newPath         = "{$this->storageFolderPath}/{$this->row['id']}/{$newName}";
         $newRelativePath = "{$this->relativeFolderPath}/{$this->row['id']}/{$newName}";
 
