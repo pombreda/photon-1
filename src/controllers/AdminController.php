@@ -66,7 +66,7 @@ class AdminController extends \Controller
      *
      * @return Response
      */
-    public function missingMethod($parameters)
+    public function missingMethod($parameters = array())
     {
         return $this->dispatch($parameters);
     }
