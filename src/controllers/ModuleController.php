@@ -26,7 +26,6 @@ class ModuleController extends \BaseController
     {
         $module = $this->getModule($module);
         $view   = $this->makeView($module);
-
         return $view;
     }
 
@@ -41,7 +40,6 @@ class ModuleController extends \BaseController
     {
         $tableName = snake_case(str_plural($tableName));
         $module    = Module::where('table_name', $tableName)->first();
-
         return $module;
     }
 
@@ -79,6 +77,7 @@ class ModuleController extends \BaseController
     {
         $module  = $this->getModule($moduleName);
         $manager = new ModuleManager($module);
+        
         $row     = $manager->createEntry($module, \Input::all());
         $action  = \Config::get('photon::photon.row_creation_redirection');
 

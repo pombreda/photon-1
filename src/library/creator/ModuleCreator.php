@@ -223,14 +223,14 @@ class ModuleCreator
 
                 // Generate a model file 
                 $modelName = ucfirst(camel_case(str_singular($tableName)));
-                \Artisan::call('generate:model', array('name' => $modelName));
+                \Artisan::call('generate:model', array('modelName' => $modelName));
 
                 // Store the path to the model file
                 $pathToModel = app_path('models') . '/' . $modelName . '.php';
 
                 // Open the newly created file and make the model extend Baum's Node instead of Eloquent
                 $fileContent = file_get_contents($pathToModel);
-                $replaced    = str_replace('extends Eloquent', 'extends Baum\Node', $fileContent);
+                $replaced    = str_replace('extends \Eloquent', 'extends Baum\Node', $fileContent);
 
                 // Try to find a name of first added column, fallback to the id
                 $toStringField = 'id';

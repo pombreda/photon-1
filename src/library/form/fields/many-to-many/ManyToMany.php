@@ -72,7 +72,7 @@ class ManyToMany extends Field
     {
         $pivot = $this->getPivotInfo();
         \Artisan::call("generate:migration", array(
-                'name' => 'destroy_' . $pivot['pivot_table'] . '_table',
+                'migrationName' => 'destroy_' . $pivot['pivot_table'] . '_table',
             )
         );
 

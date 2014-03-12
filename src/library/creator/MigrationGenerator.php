@@ -43,12 +43,12 @@ class MigrationGenerator
                 'lft'       => 'integer',
                 'rgt'       => 'integer',
                 'parent_id' => 'integer:nullable:default(null)',
-                'depth'     => 'integer'
+                'depth'     => 'integer:default(0)'
             );
         }
 
         $args = array(
-            'name'     => self::createMigrationName($command, $table, $fields),
+            'migrationName' =>  self::createMigrationName($command, $table, $fields),
             '--fields' => self::concatFields($fields)
         );
 
